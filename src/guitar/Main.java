@@ -14,6 +14,8 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -49,11 +51,12 @@ public class Main extends Application {
 
 		// Create Pane
 		Pane pane1 = new Pane();
-		pane1.setBackground(null);
-
+		pane1.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
+		pane1.setPrefHeight(stageHeight-42);
+		
+		
 		// wrap the scene contents in a pannable scroll pane.
 		ScrollPane scrollPane = createScrollPane(pane1);
-		scrollPane.setBackground(null);
 
 		// Create Scene
 		Scene scene = new Scene(scrollPane, stageWidth, stageHeight, Color.BLACK);
@@ -149,9 +152,51 @@ public class Main extends Application {
 
 		pane1.getChildren().addAll(circle3, circle5, circle7, circle9, circle12a, circle12b, Nut);
 		
-		FretMethod(frets, stageHeight, imageHeight, pane1);
+		Fret fret = new Fret(frets, stageHeight, imageHeight, pane1);
+		
 		StringMethod(fretArray, stringY, imageHeight, pane1);
 
+		float[] noteLocation = NoteBubbleLocation(frets, fretArray);
+		NoteBubble(noteLocation, stageHeight, stringY, pane1);
+
+		// Create a combo box (drop down menu)
+		ComboBox<String> comboBox = new ComboBox<>();
+		comboBox.getItems().addAll("Major", "Minor");
+		comboBox.autosize();
+		comboBox.setPromptText("Scale");
+		comboBox.layoutXProperty().bind(scrollPane.hvalueProperty()
+				.multiply(pane1.widthProperty().subtract(new ScrollPaneViewPortWidthBinding(scrollPane))));
+		scrollPane.setHvalue(0);
+		pane1.getChildren().add(comboBox);
+//		 comboBox.addEventHandler(eventType, eventHandler);
+
+		
+		GuitarString guitarString = new GuitarString(fretArray, 10, imageHeight, frets, pane1);
+		
+		stage.setTitle("Guitar Scales");
+		stage.setScene(scene);
+		stage.show();
+
+	}
+	
+	public void NoteBubble(float[] noteLocation, int stageHeight, float stringY, Pane pane){
+		
+		ArrayList<Circle> noteArray = new ArrayList<>();
+		// Creates # of NoteBubbles with set properties and adds to Pane
+		for (int i = 0; i < noteLocation.length; i++) {
+			Circle bubble = new Circle(12, Color.GREEN);
+			float bubbleX = noteLocation[i] * 100 - 12;
+			double bubbleY = stageHeight / 2 - stringY + bubble.getRadius() / 2;
+			bubble.relocate(bubbleX, bubbleY);
+			bubble.setStroke(Color.BLACK);
+			pane.getChildren().add(bubble);
+			noteArray.add(bubble);
+		}
+		
+	}
+	
+	public float[] NoteBubbleLocation(int frets, float[] fretArray){
+		
 		float[] noteLocation = new float[frets];
 		noteLocation[0] = fretArray[0] / 2;
 		noteLocation[1] = fretArray[1] - (fretArray[1] - fretArray[0]) / 2;
@@ -165,34 +210,8 @@ public class Main extends Application {
 		noteLocation[9] = fretArray[9] - (fretArray[9] - fretArray[8]) / 2;
 		noteLocation[10] = fretArray[10] - (fretArray[10] - fretArray[9]) / 2;
 		noteLocation[11] = fretArray[11] - (fretArray[11] - fretArray[10]) / 2;
-
-		ArrayList<Circle> noteArray = new ArrayList<>();
-		// Creates # of NoteBubbles with set properties and adds to Pane
-		for (int i = 0; i < noteLocation.length; i++) {
-			Circle bubble = new Circle(12, Color.GREEN);
-			float bubbleX = noteLocation[i] * 100 - 12;
-			double bubbleY = stageHeight / 2 - stringY + bubble.getRadius() / 2;
-			bubble.relocate(bubbleX, bubbleY);
-			bubble.setStroke(Color.BLACK);
-			pane1.getChildren().add(bubble);
-			noteArray.add(bubble);
-		}
-
-		// Create a combo box (drop down menu)
-		ComboBox<String> comboBox = new ComboBox<>();
-		comboBox.getItems().addAll("Major", "Minor");
-		comboBox.autosize();
-		comboBox.setPromptText("Scale");
-		comboBox.layoutXProperty().bind(scrollPane.hvalueProperty()
-				.multiply(pane1.widthProperty().subtract(new ScrollPaneViewPortWidthBinding(scrollPane))));
-		scrollPane.setHvalue(0);
-		pane1.getChildren().add(comboBox);
-		// comboBox.addEventHandler(eventType, eventHandler);
-
-		stage.setTitle("Guitar Scales");
-		stage.setScene(scene);
-		stage.show();
-
+		
+		return noteLocation;
 	}
 
 	public void FretMethod(int numberOfFrets, int stageHeight, int imageHeight, Pane pane1) {
