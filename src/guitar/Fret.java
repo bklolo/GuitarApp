@@ -9,6 +9,8 @@ public class Fret extends Line {
 	float constant = 17.817f;
 	float fretPosition = 0;
 	float fretboardLength = 24.50f;
+	float[] fretArray;
+
 
 	Fret(int numberOfFrets, int stageHeight, int imageHeight, Pane pane1) {
 		
@@ -25,24 +27,29 @@ public class Fret extends Line {
 			pane1.getChildren().add(fret);
 		}
 	}
-
+	/** Returns an array of fret positions based on the number of frets
+	 * on the guitar fretboard.	
+	*/
+	
 	public float[] calcFrets(int numberOfFrets) {
 		
-		float[] fretArray = new float[numberOfFrets];
-		
+		fretArray = new float[numberOfFrets];
+		System.out.println(fretArray.length);
 		for (int i = 0; i < fretArray.length; i++) {
-			System.out.print("fretPosition: " + i);
-			System.out.printf(" = [ %.4f", fretboardLength);
-			
+
+			System.out.println("fretposition " + i + " = " + fretPosition);
 			fretPosition += fretboardLength / constant;
 			fretboardLength -= fretboardLength / constant;
-			
-			System.out.printf(" - %.4f ] = %.4d\n", fretboardLength, fretPosition);
-			
 			fretArray[i] = fretPosition;
 		}
-
 		return fretArray;
+	}
+	
+	public float[] getFretArray() {
+		return fretArray;
+	}
+	public void setFretArray(float[] fretArray) {
+		this.fretArray = fretArray;
 	}
 
 	public float getFretboardLength() {

@@ -13,7 +13,7 @@ public class GuitarString extends Line {
 		string.setStroke(Color.GOLD);
 		string.setStartX(0);
 		string.setEndX(fretArray[frets - 1] * 100);
-		string.setStartY(stringY);
+		string.setTranslateY(stringY);
 		pane.getChildren().add(string);
 		RootNote(stringY, pane);
 

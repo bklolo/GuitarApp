@@ -104,25 +104,27 @@ public class Main extends Application {
 		Nut.setStartY(stageHeight / 2 - imageHeight / 2);
 		Nut.setEndY(stageHeight / 2 + imageHeight / 2);
 		Nut.setScaleX(20);
-
-		// Calculates and stores fret locations up to 12th fret
-		// for (int i = 0; i < fretArray.length; i++) {
-		// fretPosition += length / constant;
-		// length -= length / constant;
-		// int num = i;
-		// System.out.print("fretPosition: " + num);
-		// System.out.printf(" = [ %.4f - %.4f ] = %.4f\n", stdFretboardLength,
-		// length, fretPosition);
-		// fretArray[i] = fretPosition;
-		// }
 		
-		float[] fretArray = calcFrets(frets);
+		//// FRETBOARD DECOR
+		// Polygon polygon = new Polygon();
+		// polygon.getPoints().addAll(new double[]{
+		// 305.0, 160.0,
+		// 305.0, 240.0,
+		// 375.0, 270.0,
+		// 375.0, 130.0
+		// });
+		// polygon.setFill(Color.CORNSILK);
+		// polygon.setStroke(Color.BLACK);
+		// polygon.setStrokeWidth(.5);
 
-		float inlay3Pos = (fretArray[2] - ((fretArray[2] - fretArray[1]) / 2)) * 100;
-		float inlay5Pos = (fretArray[4] - ((fretArray[4] - fretArray[3]) / 2)) * 100;
-		float inlay7Pos = (fretArray[6] - ((fretArray[6] - fretArray[5]) / 2)) * 100;
-		float inlay9Pos = (fretArray[8] - ((fretArray[8] - fretArray[7]) / 2)) * 100;
-		float inlay12Pos = (fretArray[11] - ((fretArray[11] - fretArray[10]) / 2)) * 100;
+		Fret fret = new Fret(frets, stageHeight, imageHeight, pane1);
+		
+		
+		float inlay3Pos = (fret.fretArray[2] - ((fret.fretArray[2] - fret.fretArray[1]) / 2)) * 100;
+		float inlay5Pos = (fret.fretArray[4] - ((fret.fretArray[4] - fret.fretArray[3]) / 2)) * 100;
+		float inlay7Pos = (fret.fretArray[6] - ((fret.fretArray[6] - fret.fretArray[5]) / 2)) * 100;
+		float inlay9Pos = (fret.fretArray[8] - ((fret.fretArray[8] - fret.fretArray[7]) / 2)) * 100;
+		float inlay12Pos = (fret.fretArray[11] - ((fret.fretArray[11] - fret.fretArray[10]) / 2)) * 100;
 
 		// Creates INLAYS for fretboard
 		Circle circle3 = new Circle(15, Color.ALICEBLUE);
@@ -137,26 +139,12 @@ public class Main extends Application {
 		circle12a.relocate(inlay12Pos - circle12a.getRadius(), (stageHeight / 2 - circle12a.getRadius() - 44));
 		Circle circle12b = new Circle(15, Color.ALICEBLUE);
 		circle12b.relocate(inlay12Pos - circle12b.getRadius(), (stageHeight / 2 - circle12b.getRadius() + 44));
-
-		//// FRETBOARD DECOR
-		// Polygon polygon = new Polygon();
-		// polygon.getPoints().addAll(new double[]{
-		// 305.0, 160.0,
-		// 305.0, 240.0,
-		// 375.0, 270.0,
-		// 375.0, 130.0
-		// });
-		// polygon.setFill(Color.CORNSILK);
-		// polygon.setStroke(Color.BLACK);
-		// polygon.setStrokeWidth(.5);
-
+		
 		pane1.getChildren().addAll(circle3, circle5, circle7, circle9, circle12a, circle12b, Nut);
 		
-		Fret fret = new Fret(frets, stageHeight, imageHeight, pane1);
-		
-		StringMethod(fretArray, stringY, imageHeight, pane1);
+		StringMethod(fret.getFretArray(), stringY, imageHeight, pane1);
 
-		float[] noteLocation = NoteBubbleLocation(frets, fretArray);
+		float[] noteLocation = NoteBubbleLocation(frets, fret.getFretArray());
 		NoteBubble(noteLocation, stageHeight, stringY, pane1);
 
 		// Create a combo box (drop down menu)
@@ -171,7 +159,7 @@ public class Main extends Application {
 //		 comboBox.addEventHandler(eventType, eventHandler);
 
 		
-		GuitarString guitarString = new GuitarString(fretArray, 10, imageHeight, frets, pane1);
+		GuitarString guitarString = new GuitarString(fret.getFretArray(), 50, imageHeight, frets, pane1);
 		
 		stage.setTitle("Guitar Scales");
 		stage.setScene(scene);
@@ -212,42 +200,6 @@ public class Main extends Application {
 		noteLocation[11] = fretArray[11] - (fretArray[11] - fretArray[10]) / 2;
 		
 		return noteLocation;
-	}
-
-	public void FretMethod(int numberOfFrets, int stageHeight, int imageHeight, Pane pane1) {
-		
-		float[] array = calcFrets(numberOfFrets);
-		
-		for (int i = 0; i < array.length; i++) {
-			Line fret = new Line();
-			fret.setStroke(Color.SILVER);
-			fret.setStartX((array[i]) * 100);
-			fret.setEndX((array[i]) * 100);
-			fret.setStartY(stageHeight / 2 - imageHeight / 2);
-			fret.setEndY(stageHeight / 2 + imageHeight / 2);
-			fret.setScaleX(5);
-			pane1.getChildren().add(fret);
-		}
-	}
-
-	public float[] calcFrets(int numberOfFrets) {
-		
-		float[] fretArray = new float[numberOfFrets];
-		float fretPosition = 0;
-		float fretBoardLength = 25.40f; // Total length of guitar neck
-		float constant = 17.817f; // Constant used for calculating frets
-		float length = fretBoardLength;
-		
-		for (int i = 0; i < fretArray.length; i++) {
-			fretPosition += length / constant;
-			length -= length / constant;
-//			int num = i;
-//			System.out.print("fretPosition: " + num);
-//			System.out.printf(" = [ %.4f - %.4f ] = %.4d\n", fretBoardLength, length, fretPosition);
-			fretArray[i] = fretPosition;
-		}
-
-		return fretArray;
 	}
 
 	public void StringMethod(float[] fretArray, float stringY, int imageHeight, Pane pane1) {
