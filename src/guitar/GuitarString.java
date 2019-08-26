@@ -14,7 +14,6 @@ public class GuitarString extends Line {
 		string.setStartX(0);
 		string.setEndX(fretArray[frets - 1] * 100);
 		string.setTranslateY(stringY);
-		pane.getChildren().add(string);
 		RootNote(stringY, pane);
 
 	}
@@ -23,7 +22,7 @@ public class GuitarString extends Line {
 
 		ComboBox<String> comboBox = new ComboBox<>();
 		comboBox.getItems().addAll("A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#");
-		comboBox.setEditable(true);
+		comboBox.autosize();
 		comboBox.setButtonCell(null);
 		comboBox.setVisibleRowCount(5);			// max rows displayed
 		comboBox.getSelectionModel().select(0); // default display

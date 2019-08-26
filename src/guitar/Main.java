@@ -86,7 +86,7 @@ public class Main extends Application {
 
 		// setting the fit height and width of the image view
 		imageView.setFitHeight(200);
-		imageView.setFitWidth(stageWidth + 270);
+		imageView.setFitWidth(stageWidth + 235);
 
 		ColorAdjust colorAdjust = new ColorAdjust();
 		colorAdjust.setBrightness(-.2);
@@ -118,31 +118,16 @@ public class Main extends Application {
 		// polygon.setStrokeWidth(.5);
 
 		Fret fret = new Fret(frets, stageHeight, imageHeight, pane1);
+		Inlays inlay3 = new Inlays(fret.fretArray, 2, 15, Color.ALICEBLUE, stageHeight, pane1);
+		Inlays inlay5 = new Inlays(fret.fretArray, 4, 15, Color.ALICEBLUE, stageHeight, pane1);
+		Inlays inlay7 = new Inlays(fret.fretArray, 6, 15, Color.ALICEBLUE, stageHeight, pane1);
+		Inlays inlay9 = new Inlays(fret.fretArray, 8, 15, Color.ALICEBLUE, stageHeight, pane1);
+		Inlays inlay12a = new Inlays(fret.fretArray, 11, 15, Color.ALICEBLUE, stageHeight - 74, pane1);
+		Inlays inlay12b = new Inlays(fret.fretArray, 11, 15, Color.ALICEBLUE, stageHeight + 74, pane1);
 		
+		pane1.getChildren().addAll(inlay3, inlay5, inlay7, inlay9, inlay12a, inlay12b, Nut);
 		
-		float inlay3Pos = (fret.fretArray[2] - ((fret.fretArray[2] - fret.fretArray[1]) / 2)) * 100;
-		float inlay5Pos = (fret.fretArray[4] - ((fret.fretArray[4] - fret.fretArray[3]) / 2)) * 100;
-		float inlay7Pos = (fret.fretArray[6] - ((fret.fretArray[6] - fret.fretArray[5]) / 2)) * 100;
-		float inlay9Pos = (fret.fretArray[8] - ((fret.fretArray[8] - fret.fretArray[7]) / 2)) * 100;
-		float inlay12Pos = (fret.fretArray[11] - ((fret.fretArray[11] - fret.fretArray[10]) / 2)) * 100;
-
-		// Creates INLAYS for fretboard
-		Circle circle3 = new Circle(15, Color.ALICEBLUE);
-		circle3.relocate(inlay3Pos - circle3.getRadius(), (stageHeight / 2 - circle3.getRadius()));
-		Circle circle5 = new Circle(15, Color.ALICEBLUE);
-		circle5.relocate(inlay5Pos - circle5.getRadius(), (stageHeight / 2 - circle5.getRadius()));
-		Circle circle7 = new Circle(15, Color.ALICEBLUE);
-		circle7.relocate(inlay7Pos - circle7.getRadius(), (stageHeight / 2 - circle7.getRadius()));
-		Circle circle9 = new Circle(15, Color.ALICEBLUE);
-		circle9.relocate(inlay9Pos - circle9.getRadius(), (stageHeight / 2 - circle9.getRadius()));
-		Circle circle12a = new Circle(15, Color.ALICEBLUE);
-		circle12a.relocate(inlay12Pos - circle12a.getRadius(), (stageHeight / 2 - circle12a.getRadius() - 44));
-		Circle circle12b = new Circle(15, Color.ALICEBLUE);
-		circle12b.relocate(inlay12Pos - circle12b.getRadius(), (stageHeight / 2 - circle12b.getRadius() + 44));
-		
-		pane1.getChildren().addAll(circle3, circle5, circle7, circle9, circle12a, circle12b, Nut);
-		
-		StringMethod(fret.getFretArray(), stringY, imageHeight, pane1);
+		StringMethod(fret.getFretArray(), stringY, stageWidth, imageHeight, pane1);
 
 		float[] noteLocation = NoteBubbleLocation(frets, fret.getFretArray());
 		NoteBubble(noteLocation, stageHeight, stringY, pane1);
@@ -160,6 +145,7 @@ public class Main extends Application {
 
 		
 		GuitarString guitarString = new GuitarString(fret.getFretArray(), 50, imageHeight, frets, pane1);
+		pane1.getChildren().add(guitarString);
 		
 		stage.setTitle("Guitar Scales");
 		stage.setScene(scene);
@@ -202,20 +188,19 @@ public class Main extends Application {
 		return noteLocation;
 	}
 
-	public void StringMethod(float[] fretArray, float stringY, int imageHeight, Pane pane1) {
+	public void StringMethod(float[] fretArray, float stringY, int stageWidth, int imageHeight, Pane pane1) {
 		
 		for (int i = 0; i < 6; i++) {
 			Line string = new Line();
 			string.setStroke(Color.GOLD);
 			string.setStartX(0);
-			string.setEndX(fretArray[11] * 100);
+			string.setEndX(stageWidth + 235);
 			string.setStartY(stringY);
 			string.setEndY(stringY);
 			string.setLayoutY(20 + i * ((imageHeight - 5) / 6));
 			string.setScaleY(5 + .5 * i);
 
 			DropShadow shadow = new DropShadow();
-			shadow.setOffsetX(11.0);
 			shadow.setOffsetY(1.0);
 			shadow.setHeight(1);
 			shadow.setColor(Color.BLACK);
