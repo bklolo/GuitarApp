@@ -4,13 +4,13 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
-public class Inlays extends Circle {
+public class Inlay extends Circle {
 	
 	float position;
 	
-	Inlays(float[] fretArray, int index, int radius, Color color, int stageHeight, Pane pane){
+	Inlay(float[] fretArray, int index, int radius, Color color, int stageHeight){
 		super(radius, color);
-		super.setCenterX(Inlays.inlayPosition(fretArray, index));
+		super.setCenterX(Inlay.inlayPosition(fretArray, index));
 		super.setCenterY(stageHeight / 2);
 
 	}
