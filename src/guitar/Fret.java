@@ -13,13 +13,13 @@ public class Fret extends Line {
 
 	Fret(int fretCount, int stageHeight, int imageHeight, Pane pane1) {
 
-		float[] array = calcFrets(fretCount);
+		fretArray = calcFrets(fretCount);
 
-		for (int i = 0; i < array.length; i++) {
+		for (int i = 0; i < fretArray.length; i++) {
 			Line fret = new Line();
 			fret.setStroke(Color.SILVER);
-			fret.setStartX((array[i]) * 100);
-			fret.setEndX((array[i]) * 100);
+			fret.setStartX((fretArray[i]) * 100);
+			fret.setEndX((fretArray[i]) * 100);
 			fret.setStartY(stageHeight / 2 - imageHeight / 2);
 			fret.setEndY(stageHeight / 2 + imageHeight / 2);
 			fret.setScaleX(5);
@@ -32,14 +32,14 @@ public class Fret extends Line {
 	public float[] calcFrets(int numberOfFrets) 
 	{
 
-		fretArray = new float[numberOfFrets];
-		for (int i = 0; i < fretArray.length; i++) 
+		float[] array = new float[numberOfFrets];
+		for (int i = 0; i < array.length; i++) 
 		{
 			fretPosition += fretboardLength / constant;
 			fretboardLength -= fretboardLength / constant;
-			fretArray[i] = fretPosition;
+			array[i] = fretPosition;
 		}
-		return fretArray;
+		return array;
 	}
 
 	public float[] getFretArray() {

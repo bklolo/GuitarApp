@@ -26,33 +26,37 @@ public class Guitar {
 	// private static double TranslateY;
 	// Guitar vars
 	private static int fretCount = 12;
-	private float[] fretArray = new float[fretCount];
 	private static int stringCount = 6;
+	private float[] fretLocation;
 	private float[] noteLocation;
+	
+	
 
 	Guitar(Scene scene, Pane pane, int stageHeight, int stageWidth, String image, int imageHeight, int imageWidth) {
-
-		Fretboard(pane, image, stageHeight, imageHeight, imageWidth);
-
+		// Method that applies an image to act as the fretboard
+		FretboardImage(pane, image, stageHeight, imageHeight, imageWidth);
+		// creates frets on top of fretboard image
 		Fret fret = new Fret(fretCount, stageHeight, imageHeight, pane);
-		noteLocation = fret.getFretArray();
-		NoteBubble noteBubble = new NoteBubble(pane, imageHeight, stageHeight, noteLocation, fretCount);
-
+		pane.getChildren().add(fret);
+		fretLocation = fret.getFretArray();
+		
+		noteLocation = notePosition(fretLocation, fretCount);
+		// creates guitar Nut
 		Nut(pane, stageHeight, imageHeight);
-
+		// creates 3,5,7,9,12 inlays on fretboard
 		Inlays(pane, stageHeight, imageHeight, fretCount);
 
-		GuitarString guitarString = new GuitarString(pane, stageHeight, imageHeight, imageWidth, stringCount);
-		// ScrollPane scrollPane = UseScrollPane(scene, pane);
-		// ScaleSelect(pane, scrollPane);
-		// pane.getChildren().addAll(scrollPane, fret, guitarString,
-		// noteBubble);
-		pane.getChildren().addAll(fret, guitarString, noteBubble);
+		// for loop to create each guitar string
+		for(int i = 0; i < stringCount; i++)
+		{
+			GuitarString guitarString = new GuitarString(pane, stageHeight, imageHeight, imageWidth, stringCount, noteLocation, i);
+			pane.getChildren().add(guitarString);
+		}
 
 	}
 
 	// Generates the background for the guitar fretboard
-	private Image Fretboard(Pane pane, String jpg, int stageHeight, int imageHeight, int imageWidth) {
+	private Image FretboardImage(Pane pane, String jpg, int stageHeight, int imageHeight, int imageWidth) {
 
 		Image test = null;
 		try {
@@ -96,96 +100,35 @@ public class Guitar {
 		pane.getChildren().add(Nut);
 
 	}
+	
+	public static float[] notePosition(float[] fretLocation, int frets) {
+		float[] noteLocation = new float[frets];
+		noteLocation[0] = fretLocation[0] / 2;
+		noteLocation[1] = fretLocation[1] - (fretLocation[1] - fretLocation[0]) / 2;
+		noteLocation[2] = fretLocation[2] - (fretLocation[2] - fretLocation[1]) / 2;
+		noteLocation[3] = fretLocation[3] - (fretLocation[3] - fretLocation[2]) / 2;
+		noteLocation[4] = fretLocation[4] - (fretLocation[4] - fretLocation[3]) / 2;
+		noteLocation[5] = fretLocation[5] - (fretLocation[5] - fretLocation[4]) / 2;
+		noteLocation[6] = fretLocation[6] - (fretLocation[6] - fretLocation[5]) / 2;
+		noteLocation[7] = fretLocation[7] - (fretLocation[7] - fretLocation[6]) / 2;
+		noteLocation[8] = fretLocation[8] - (fretLocation[8] - fretLocation[7]) / 2;
+		noteLocation[9] = fretLocation[9] - (fretLocation[9] - fretLocation[8]) / 2;
+		noteLocation[10] = fretLocation[10] - (fretLocation[10] - fretLocation[9]) / 2;
+		noteLocation[11] = fretLocation[11] - (fretLocation[11] - fretLocation[10]) / 2;
+
+		return noteLocation;
+	}
 
 	private void Inlays(Pane pane, int stageHeight, int imageHeight, int fretCount) {
 
-		Inlay inlay3 = new Inlay(noteLocation, 2, 15, Color.ALICEBLUE, stageHeight);
-		Inlay inlay5 = new Inlay(noteLocation, 4, 15, Color.ALICEBLUE, stageHeight);
-		Inlay inlay7 = new Inlay(noteLocation, 6, 15, Color.ALICEBLUE, stageHeight);
-		Inlay inlay9 = new Inlay(noteLocation, 8, 15, Color.ALICEBLUE, stageHeight);
-		Inlay inlay12a = new Inlay(noteLocation, 11, 15, Color.ALICEBLUE, stageHeight - 74);
-		Inlay inlay12b = new Inlay(noteLocation, 11, 15, Color.ALICEBLUE, stageHeight + 74);
+		Inlay inlay3 = new Inlay(fretLocation, 2, 15, Color.ALICEBLUE, stageHeight);
+		Inlay inlay5 = new Inlay(fretLocation, 4, 15, Color.ALICEBLUE, stageHeight);
+		Inlay inlay7 = new Inlay(fretLocation, 6, 15, Color.ALICEBLUE, stageHeight);
+		Inlay inlay9 = new Inlay(fretLocation, 8, 15, Color.ALICEBLUE, stageHeight);
+		Inlay inlay12a = new Inlay(fretLocation, 11, 15, Color.ALICEBLUE, stageHeight - 74);
+		Inlay inlay12b = new Inlay(fretLocation, 11, 15, Color.ALICEBLUE, stageHeight + 74);
 
 		pane.getChildren().addAll(inlay3, inlay5, inlay7, inlay9, inlay12a, inlay12b);
 	}
-
-	// private ScrollPane UseScrollPane(Scene scene, Pane pane) {
-	//
-	// ScrollPane scrollPane = new ScrollPane();
-	//
-	// scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-	// scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-	// scrollPane.setPannable(true);
-	// scrollPane.setPrefSize(800, 600);
-	// scrollPane.setContent(pane);
-	//
-	// scrollPane.prefWidthProperty().bind(scene.widthProperty());
-	// scrollPane.prefHeightProperty().bind(scene.widthProperty());
-	//
-	// // center the scroll contents.
-	// scrollPane.setHvalue(scrollPane.getHmin() + (scrollPane.getHmax() -
-	// scrollPane.getHmin()) / 2);
-	// scrollPane.setVvalue(scrollPane.getVmin() + (scrollPane.getVmax() -
-	// scrollPane.getVmin()) / 2);
-	//
-	// return scrollPane;
-	// }
-
-	// private void ScaleSelect(Pane pane, ScrollPane scrollPane) {
-	//
-	// ComboBox<String> comboBox = new ComboBox<>();
-	// comboBox.getItems().addAll("Major", "Minor");
-	// comboBox.autosize();
-	// comboBox.setPromptText("Scale");
-	// comboBox.layoutXProperty().bind(scrollPane.hvalueProperty()
-	// .multiply(pane.widthProperty().subtract(new
-	// ScrollPaneViewPortWidthBinding(scrollPane))));
-	// scrollPane.setHvalue(0);
-	// pane.getChildren().add(comboBox);
-	// // comboBox.addEventHandler(eventType, eventHandler);
-	// }
-
-	// static class ScrollPaneViewPortWidthBinding extends DoubleBinding {
-	//
-	// private final ScrollPane root;
-	//
-	// public ScrollPaneViewPortWidthBinding(ScrollPane root) {
-	// this.root = root;
-	// super.bind(root.viewportBoundsProperty());
-	// }
-	//
-	// @Override
-	// protected double computeValue() {
-	// return root.getViewportBounds().getWidth();
-	// }
-	//
-	// }
-	//
-	// EventHandler<MouseEvent> fretBoardOnMousePressed = new
-	// EventHandler<MouseEvent>() {
-	//
-	// @Override
-	// public void handle(MouseEvent t) {
-	// SceneX = t.getSceneX();
-	// SceneY = t.getSceneY();
-	// TranslateX = ((Circle) (t.getSource())).getTranslateX();
-	// TranslateY = ((Circle) (t.getSource())).getTranslateY();
-	// }
-	// };
-	//
-	// EventHandler<MouseEvent> fretBoardOnMouseDragged = new
-	// EventHandler<MouseEvent>() {
-	//
-	// @Override
-	// public void handle(MouseEvent t) {
-	// double offsetX = t.getSceneX() - SceneX;
-	// double offsetY = t.getSceneY() - SceneY;
-	// double newTranslateX = TranslateX + offsetX;
-	// double newTranslateY = TranslateY + offsetY;
-	//
-	// ((Rectangle) t.getSource()).setTranslateX(newTranslateX);
-	// ((Rectangle) (t.getSource())).setTranslateY(newTranslateY);
-	// }
-	// };
 
 }
