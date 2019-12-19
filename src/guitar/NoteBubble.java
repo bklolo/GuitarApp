@@ -1,22 +1,45 @@
 package src.guitar;
 
+import javafx.scene.control.MenuButton;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 public class NoteBubble extends Circle {
-	
-	double radius;
-	Color color;
-	
-	NoteBubble(double radius, Color color){
-		super(radius, color);		
+
+	private static double radius = 13;
+	private static Color color = Color.ALICEBLUE;
+	private float bubbleX, bubbleY;
+	private boolean[] display;
+
+	NoteBubble(Pane pane, MenuButton mButton, int offset, float stringYPos, float[] noteLocation) 
+	{
+
+		super(radius, color);
+
+		// circle features: size, shape, color
+		// button feature: clickable, plays note
+		super.setFill(color);
+		super.setStroke(Color.BLACK);
+
 		
+		bubbleY = (float) (stringYPos + offset + getRadius() / 2);
+
+		super.setCenterY(bubbleY);
+		super.setCenterX(bubbleX);
+		super.setOpacity(.75);
+		pane.getChildren().add(this);
+
 	}
-	
-	public static float notePosition(float[] fretArray, int index){
-		float inlayPos = (fretArray[index] - ((fretArray[index] - fretArray[index - 1]) / 2)) * 100;
-		
-		return inlayPos;
+
+	public Color getColor() 
+	{
+		return color;
 	}
-	
+
+	public boolean displayNote() 
+	{
+		return true;
+	}
+
 }

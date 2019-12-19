@@ -6,48 +6,46 @@ import javafx.scene.shape.Line;
 
 public class Fret extends Line {
 
-	float constant = 17.817f;
-	float fretPosition = 0;
-	float fretboardLength = 24.50f;
-	float[] fretArray;
+	private float constant = 17.817f;
+	private float fretPosition = 0;
+	private float fretboardLength = 24.50f;
+	private float[] fretArray;
 
+	Fret(int fretCount, int stageHeight, int imageHeight, Pane pane1) {
 
-	Fret(int numberOfFrets, int stageHeight, int imageHeight, Pane pane1) {
-		
-		float[] array = calcFrets(numberOfFrets);
-		
-		for (int i = 0; i < array.length; i++) {
+		fretArray = calcFrets(fretCount);
+
+		for (int i = 0; i < fretArray.length; i++) {
 			Line fret = new Line();
 			fret.setStroke(Color.SILVER);
-			fret.setStartX((array[i]) * 100);
-			fret.setEndX((array[i]) * 100);
+			fret.setStartX((fretArray[i]) * 100);
+			fret.setEndX((fretArray[i]) * 100);
 			fret.setStartY(stageHeight / 2 - imageHeight / 2);
 			fret.setEndY(stageHeight / 2 + imageHeight / 2);
 			fret.setScaleX(5);
 			pane1.getChildren().add(fret);
 		}
 	}
-	/** Returns an array of fret positions based on the number of frets
-	 * on the guitar fretboard.	
-	*/
-	
-	public float[] calcFrets(int numberOfFrets) {
-		
-		fretArray = new float[numberOfFrets];
-		System.out.println(fretArray.length);
-		for (int i = 0; i < fretArray.length; i++) {
 
-			System.out.println("fretposition " + i + " = " + fretPosition);
+	// Returns an array of fret positions based on the number of frets on the
+	// guitar fretboard.
+	public float[] calcFrets(int numberOfFrets) 
+	{
+
+		float[] array = new float[numberOfFrets];
+		for (int i = 0; i < array.length; i++) 
+		{
 			fretPosition += fretboardLength / constant;
 			fretboardLength -= fretboardLength / constant;
-			fretArray[i] = fretPosition;
+			array[i] = fretPosition;
 		}
-		return fretArray;
+		return array;
 	}
-	
+
 	public float[] getFretArray() {
 		return fretArray;
 	}
+
 	public void setFretArray(float[] fretArray) {
 		this.fretArray = fretArray;
 	}
