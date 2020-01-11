@@ -1,15 +1,9 @@
 package src.guitar;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 
 // the class that creates each guitar string. 
@@ -26,6 +20,11 @@ public class GuitarString extends Line
 	// imageWidth
 	// image chosen by user feature?
 
+	public GuitarString()
+	{
+		
+	}
+	
 	GuitarString(Pane pane, int stageHeight, int imageHeight, int imageWidth, int stringCount, 
 			float[] noteLocation, int index) 
 	{
@@ -35,32 +34,8 @@ public class GuitarString extends Line
 		
 		StringProperties(pane, guitarString, stageHeight, imageHeight, imageWidth, stringCount, 
 				noteLocation, index, offset);
-		CreateButton(pane, offset);
-		// RootNote(stringY, pane);
-	}
-	
-	private void CreateButton(Pane pane, int offset)
-	{
-		
-		float yLocation = stringYPos + offset - 10;
-		
-		MenuButton mButton = new MenuButton();
-		// add all entries from local notes[] inserted as MenuItems into each MenuButton options list
-		for(int i = 0; i < notes.length; i++)
-		{
-			MenuItem item = new MenuItem(notes[i]);
-			mButton.getItems().add(item);
-		}
-		
-		mButton.relocate(0, yLocation);
-		mButton.isResizable();
-		mButton.autosize();
-		mButton.toFront();
-		mButton.setOnAction(event);
-		
-		mButton.setOnAction(event);
-		pane.getChildren().add(mButton);
-		
+
+//		RootNote(stringY, pane);
 	}
 
 	private void StringProperties(Pane pane, Line guitarString, int stageHeight, int imageHeight, int imageWidth, int stringCount, 
@@ -84,21 +59,6 @@ public class GuitarString extends Line
 
 	}
 
-	ComboBox<String> RootNote(float stringY) {
-
-		ComboBox<String> comboBox = new ComboBox<>();
-		comboBox.getItems().addAll("A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#");
-		comboBox.isResizable();
-		comboBox.setPrefWidth(5);
-		// comboBox.setButtonCell("hi");
-		comboBox.setVisibleRowCount(5); // max rows displayed
-		comboBox.getSelectionModel().select(0); // default display
-		comboBox.relocate(0, stringY);
-
-		return comboBox;
-
-	}
-
 	private DropShadow shadow(Line line) {
 		DropShadow shadow = new DropShadow();
 		shadow.setOffsetY(1.0);
@@ -109,12 +69,6 @@ public class GuitarString extends Line
 		return shadow;
 	}
 
-    EventHandler<ActionEvent> event = new EventHandler<ActionEvent>()
-    {
-        public void handle(ActionEvent e)
-        {
-        	System.out.println("asdfsadf");
-        }
-    };
+
 
 }

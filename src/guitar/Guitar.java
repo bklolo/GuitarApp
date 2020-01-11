@@ -17,7 +17,8 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
-public class Guitar {
+public class Guitar 
+{
 
 	// // Event handler vars
 	// private static double SceneX;
@@ -29,10 +30,9 @@ public class Guitar {
 	private static int stringCount = 6;
 	private float[] fretLocation;
 	private float[] noteLocation;
-	
-	
 
-	Guitar(Scene scene, Pane pane, int stageHeight, int stageWidth, String image, int imageHeight, int imageWidth) {
+	Guitar(Scene scene, Pane pane, int stageHeight, int stageWidth, String image, int imageHeight, int imageWidth) 
+	{
 		// Method that applies an image to act as the fretboard
 		FretboardImage(pane, image, stageHeight, imageHeight, imageWidth);
 		// creates frets on top of fretboard image
@@ -45,23 +45,32 @@ public class Guitar {
 		Nut(pane, stageHeight, imageHeight);
 		// creates 3,5,7,9,12 inlays on fretboard
 		Inlays(pane, stageHeight, imageHeight, fretCount);
-
 		// for loop to create each guitar string
 		for(int i = 0; i < stringCount; i++)
 		{
 			GuitarString guitarString = new GuitarString(pane, stageHeight, imageHeight, imageWidth, stringCount, noteLocation, i);
 			pane.getChildren().add(guitarString);
 		}
+		
+		InterfaceDisplay(pane);
 
+	}
+	// ComboBoxes, etc should be grouped here, in their own type of pane
+	private void InterfaceDisplay(Pane pane)
+	{
+		UI userInterface = new UI(pane);
 	}
 
 	// Generates the background for the guitar fretboard
-	private Image FretboardImage(Pane pane, String jpg, int stageHeight, int imageHeight, int imageWidth) {
+	private Image FretboardImage(Pane pane, String jpg, int stageHeight, int imageHeight, int imageWidth) 
+	{
 
 		Image test = null;
-		try {
+		try 
+		{
 			test = new Image(new FileInputStream(jpg));
-		} catch (FileNotFoundException e) {
+		} catch (FileNotFoundException e) 
+		{
 
 			e.printStackTrace();
 		}
@@ -87,7 +96,8 @@ public class Guitar {
 
 	}
 
-	private void Nut(Pane pane, int stageHeight, int imageHeight) {
+	private void Nut(Pane pane, int stageHeight, int imageHeight) 
+	{
 
 		Line Nut = new Line();
 		Nut.setStroke(Color.ANTIQUEWHITE);
@@ -100,8 +110,9 @@ public class Guitar {
 		pane.getChildren().add(Nut);
 
 	}
-	
-	public static float[] notePosition(float[] fretLocation, int frets) {
+	// returns calculated locations of NoteBubbles from 1st - 12th frets
+	public static float[] notePosition(float[] fretLocation, int frets) 
+	{
 		float[] noteLocation = new float[frets];
 		noteLocation[0] = fretLocation[0] / 2;
 		noteLocation[1] = fretLocation[1] - (fretLocation[1] - fretLocation[0]) / 2;
@@ -119,7 +130,8 @@ public class Guitar {
 		return noteLocation;
 	}
 
-	private void Inlays(Pane pane, int stageHeight, int imageHeight, int fretCount) {
+	private void Inlays(Pane pane, int stageHeight, int imageHeight, int fretCount) 
+	{
 
 		Inlay inlay3 = new Inlay(fretLocation, 2, 15, Color.ALICEBLUE, stageHeight);
 		Inlay inlay5 = new Inlay(fretLocation, 4, 15, Color.ALICEBLUE, stageHeight);
