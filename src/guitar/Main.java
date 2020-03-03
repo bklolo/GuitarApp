@@ -13,7 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 
-public class NewMain extends Application 
+public class Main extends Application 
 {
 
 	// Event Handler vars

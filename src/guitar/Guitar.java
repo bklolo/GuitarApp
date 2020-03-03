@@ -33,13 +33,17 @@ public class Guitar
 
 	Guitar(Scene scene, Pane pane, int stageHeight, int stageWidth, String image, int imageHeight, int imageWidth) 
 	{
-		// Method that applies an image to act as the fretboard
+		// applies an image to act as the fretboard
 		FretboardImage(pane, image, stageHeight, imageHeight, imageWidth);
-		// creates frets on top of fretboard image
-		Fret fret = new Fret(fretCount, stageHeight, imageHeight, pane);
-		pane.getChildren().add(fret);
-		fretLocation = fret.getFretArray();
 		
+		// creates frets on top of fretboard image
+		Fret frets = new Fret(fretCount, stageHeight, imageHeight, pane);
+		pane.getChildren().add(frets);
+		
+		// store the array fret locations, calculated based on number of frets dispalyed
+		fretLocation = frets.getFretArray();
+
+		// use fret location intervals to position note bubbles
 		noteLocation = notePosition(fretLocation, fretCount);
 		// creates guitar Nut
 		Nut(pane, stageHeight, imageHeight);
@@ -69,11 +73,13 @@ public class Guitar
 		try 
 		{
 			test = new Image(new FileInputStream(jpg));
-		} catch (FileNotFoundException e) 
+		} 
+		catch (FileNotFoundException e) 
 		{
 
 			e.printStackTrace();
 		}
+		
 		Image image = test;
 
 		// create imageview object

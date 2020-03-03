@@ -37,7 +37,7 @@ public class NoteBubble extends Circle {
 		return color;
 	}
 
-	public boolean displayNote() 
+	public boolean displayNote(Control scale, Control key) 
 	{
 		return true;
 	}
