@@ -1,79 +1,66 @@
 package src.guitar;
 
 import java.io.File;
-
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.ComboBox;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-
-public class Main extends Application 
-{
-
-	// Event Handler vars
-	double SceneX;
-	double SceneY;
-	double TranslateX;
-	double TranslateY;
+public class Main extends Application{
 	
-	// Stage vars
 	int stageHeight = 400;
 	int stageWidth = 1235;
 	int imageHeight = 200;
 	int imageWidth = stageWidth;
-	String jpg = ".\\maple fretboard.jpg";
+	String imageDir = ".\\maple fretboard.jpg";
 	String dirPath = "C:\\Users\\Bklolo\\Documents\\Git Repositories\\Music Apps\\GuitarApp";
 	String dirName = "data";
 	File file = new File(dirPath, dirName);
 
-	public static void main(String[] args) 
-	{ 
+	public static void main(String[] args){ 
 		launch(args);
 	}
 
 	@Override
-	public void start(Stage stage) 
-	{
+	public void start(Stage stage){
 		
-		if(file.exists())
-		{
-			return;
-		} 
-		else
-		{
-			System.out.println("fafaf");
-		}
-		// Create Pane
 		Pane pane = new Pane();
 		pane.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 		pane.setPrefHeight(stageHeight - 42);
-
-		GridPane interfaceButtons = new GridPane();
-		interfaceButtons.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
-		pane.getChildren().add(interfaceButtons);
+		
+		new Guitar(pane, stageHeight, stageWidth, imageHeight, imageWidth, imageDir);
 		
 		Scene scene = new Scene(pane, stageWidth, stageHeight, Color.BLACK);
 
-		Guitar myGuitar = new Guitar(scene, pane, stageHeight, stageWidth, jpg, imageHeight, imageWidth);
-		
-		
-		
 		scene.setFill(Color.BLACK);
-		stage.setMinWidth(stageWidth - 300);
-		stage.setMinHeight(stageHeight - 100);
+		stage.setMinWidth(stageWidth + 8);
+		stage.setMinHeight(stageHeight);
 		stage.setMaxHeight(stageHeight);
-		stage.setMaxWidth(stageWidth + 205);
-
+		stage.setMaxWidth(stageWidth);
 		stage.setTitle("Guitar Scales");
 		stage.setScene(scene);
 		stage.show();
-
+		
 	}
-
 }
+
+//Each string root note chosen generates/points to a chromatic array starting from that note
+//
+//depending on the scale and key chosen, will omit certain notes
+//
+//if scale is Major, {1,1,0,1,1,1,0} WWhWWWh used to display or not
+// if Minor, use Major scale at index 5: {1,0,1,1,0,1,1} WhWWhWW 
+//use hash map to store "note", 0 or 1 to display or no
+//
+//
+//string root: B {B C C# D D# E F F# G G# A A# B}
+//scale: Major {1,1,0,1,1,1,0}
+//key: C
+//
+//B C C# D D# E F F# G G# A A# B
+//1 1    1    1 1    1    1    1
+
+

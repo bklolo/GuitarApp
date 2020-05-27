@@ -3,68 +3,63 @@ package src.guitar;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Pane;
 
 public class UI {
 
-	GuitarString guitar = new GuitarString();
-	String[] notes = guitar.notes;
-
-	public UI(Pane pane) 
+	public UI(Pane pane)
 	{
 
-		ComboBox<String> comboBox = new ComboBox<>();
-		comboBox.getItems().addAll("Major", "Minor");
-		comboBox.autosize();
-		comboBox.setPromptText("Scale");
+		ComboBox<String> scales = new ComboBox<>();
+		scales.getItems().addAll("Major", "Minor");
+		scales.autosize();
+		scales.setPromptText("Scale");
+		scales.setLayoutX(450);
+		
+		ComboBox<String> keys = new ComboBox<>();
+		keys.getItems().addAll("A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#");
+		keys.autosize();
+		keys.setPromptText("Key");
+		keys.setLayoutX(650);
+		keys.setVisibleRowCount(5);
 
-		pane.getChildren().add(comboBox);
+		pane.getChildren().addAll(scales, keys);
 		
 	}
 	
+	//attempt to create a generic combo box handler
+//	public void comboBox_OnSelectionChanged(Object sender, ActionEvent e)
+//	{
+//	    if (sender.equals(ComboBoxBase<T>) == ComboBox<T>)
+//	    {
+//	        ComboBox box = (ComboBox)sender;
+//	        //do what you like with it
+//	    }
+//	}
+
 	
-
-	private void CreateButton(Pane pane, int offset, int stringYPos) {
-
-		float yLocation = stringYPos + offset - 10;
-
-		MenuButton mButton = new MenuButton();
-		// add all entries from local notes[] inserted as MenuItems into each
-		// MenuButton options list
-		for (int i = 0; i < notes.length; i++) {
-			MenuItem item = new MenuItem(notes[i]);
-			mButton.getItems().add(item);
+	public static <T> ComboBox<T> CreateComboBox(T[] items, int select, int xLayout, int yLayout){
+		
+		ComboBox<T> box = new ComboBox<>();
+		
+		for(int i = 0; i < items.length; i++){
+			box.getItems().add(items[i]);
 		}
-
-		mButton.relocate(0, yLocation);
-		mButton.isResizable();
-		mButton.autosize();
-		mButton.toFront();
-		mButton.setOnAction(event);
-
-		mButton.setOnAction(event);
-		pane.getChildren().add(mButton);
-
+		
+		box.autosize();
+//		box.setPromptText();	// default displayed text
+		box.getSelectionModel().select(items[select]);
+		box.setLayoutX(xLayout);
+		box.setLayoutY(yLayout);
+		box.setVisibleRowCount(5);
+		
+		return box;
 	}
 
-	private void RootNote(float stringY) {
-
-		ComboBox<String> comboBox = new ComboBox<>();
-		comboBox.getItems().addAll("A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#");
-		comboBox.isResizable();
-		comboBox.setPrefWidth(5);
-		// comboBox.setButtonCell("hi");
-		comboBox.setVisibleRowCount(5); // max rows displayed
-		comboBox.getSelectionModel().select(0); // default display
-		comboBox.relocate(0, stringY);
-
-	}
-
-	EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+	EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() 
+	{
 		public void handle(ActionEvent e) {
-			System.out.println("asdfsadf");
+			
 		}
 	};
 
