@@ -17,8 +17,6 @@ import javafx.stage.Stage;
 // 	refactoring: moved Map and Note Bubble code into "Scales" event handler method (still need to figure out a way for all handlers to rearrange note bubbles)
 //	created Group to use group.getChildren().clear() to prevent note bubbles from being drawn on top of one another
 
-//	TODO: fix Group position and note bubble position within group (created Group because interating over Pane while attempting to remove Note Bubbles does not work)
-//	TODO: figure out why you can't select the buttons after the note bubbles appear
 
 public class test extends Application 
 {
@@ -28,35 +26,33 @@ public class test extends Application
 	int stageWidth = 1235;
 	int imageHeight = 200;
 	int imageWidth = stageWidth;
+	Group group = new Group();
+	Pane pane = new Pane();
+	Pane notesPane = new Pane();
 	
 	//guitar string vars
 	int fretCount = 12;
-	String imageDir = ".\\maple fretboard.jpg";
 	int stringCount = 6;
 	int[] minorScale = {0,1,0,1,1,0,1,1};
 	int[] majorScale = {0,1,1,0,1,1,1,0};
+	String imageDir = ".\\maple fretboard.jpg";
+	String[] chromaticScale = { "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#" };
 	
 	// combo box vars
 	int selectedKeysIndex;
+	int[] usedScaleArray = new int[8];
+	String[] musicalScales = {"Major", "Minor"};
 	
 	// guitar vars
 	float[] fretLocations;
 	float[] noteX;
 	
-	//local vars
-	int[] usedScaleArray = new int[8];
-	String[] chromaticScale = { "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#" };
-	String[] musicalScales = {"Major", "Minor"};
+	// test vars
 	String[] chosenKeyChromatic;
-	String[] guitarStringChromatic;
 	String[] notesInKey = new String[8];
 	String selectedScalesItem;
-	// HashMap<Note, T/F> used to turn notes on/off
-	Map<String, Integer> hm = new HashMap<String, Integer>();
-	Group group = new Group();
-	Pane pane = new Pane();
-	Pane notesPane = new Pane();
-	
+	HashMap<String, Integer> hm = new HashMap<String, Integer>();		// HashMap<Note, T/F> used to turn notes on/off
+
 	public static void main(String[] args) 
 	{ 
 		launch(args);
@@ -66,7 +62,7 @@ public class test extends Application
 	public void start(Stage stage) 
 	{
 
-//		notesPane.setStyle("-fx-border-color: white");	// used to determine pane width/height and location
+		notesPane.setStyle("-fx-border-color: white");	// used to determine pane width/height and location
 		notesPane.setMaxSize(50, 50);
 		notesPane.autosize();
 		notesPane.setMouseTransparent(true);	// disables mouse events for pane
@@ -94,28 +90,23 @@ public class test extends Application
 		
 		// create guitarString
 		GuitarString guitarString = new GuitarString(pane, stageHeight, imageHeight, imageWidth, 
-															stringCount, noteX, 0);	//index 0
+															stringCount, noteX, 0, hm);	//index 0
 		
 		// store selected guitarstring combo box index
 		int stringBaseNote = guitarString.returnCBoxIndex();
 		
 		System.out.println("stringBaseNote: " + stringBaseNote);
 		
-		// create chromatic scale starting from guitarstring combobox selection
-		guitarStringChromatic = guitarString.newChromArray(chromaticScale, stringBaseNote);
-		
 		// chromatic scale array that begins with the chosen key from combobox (String[])
 		chosenKeyChromatic = guitarString.newChromArray(chromaticScale, selectedKeysIndex);
 
-		// fill HashMap with chromatic scale of Guitar String, based on string base note, set noteDisplay = 0
-		for(int i = 0; i < guitarStringChromatic.length; i++){
-			hm.put(guitarStringChromatic[i], 0);
-		}
+
 
 		// update note bubbles per combo box selected index
 		scale.setOnAction(new EventHandler<ActionEvent>(){
 		    @Override public void handle(ActionEvent e){
 		    	selectedScalesItem = scale.getSelectionModel().getSelectedItem();
+		    	notesPane.getChildren().clear();
 		    	updateViewableNotes();
 		    }
 		});
@@ -146,6 +137,10 @@ public class test extends Application
 	}
 	
 	private void updateViewableNotes() {
+		// fill HashMap with chromatic scale of Guitar String, based on string base note, set noteDisplay = 0
+		for(int i = 0; i < chromaticScale.length; i++){
+			hm.put(chromaticScale[i], 0);
+		}
 		
 		// if selected scale is major, use Major scale, otherwise use Minor scale
 		if(selectedScalesItem == "Major"){usedScaleArray = majorScale;}
@@ -168,20 +163,18 @@ public class test extends Application
 		// iterates through Map and turn on/off noteBubbles
 		for(int i = 0; i < chromaticScale.length; i++){
 			NoteBubble bubble = new NoteBubble(offset, stringYPos);
-			bubble.setLayoutX(noteX[i] * 100);
-			for(String key : hm.keySet()){
-				if(key == chromaticScale[i]){
-					if(hm.get(key) == 0){
-						bubble.setVisible(false);
-					}
-				}
+			bubble.setLayoutX(noteX[i == 0 ? 11 : i-1] * 100);			
+			if(hm.get(chromaticScale[i]) == 0){
+				bubble.setVisible(false);
 			}
-			notesPane.getChildren().add(bubble);
-//			System.out.println(chromaticScale[i]);
-		}
-		System.out.println(hm.toString());
 
-		hm.clear();
+//			if(hm.get(selectedBaseNoteChromatic[i]) == 0){	// replace if statement in forloop for Guitar class
+//				bubble.setVisible(false);
+//			}
+			
+			notesPane.getChildren().add(bubble);
+
+		}
 		
 	}
 	

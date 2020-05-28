@@ -47,8 +47,6 @@ public class GuitarString extends Line
 		// create new String array beginning from selected note
 		selectedBaseNoteChromatic = newChromArray(chromaticScale, indexOfSelectedBaseNote);
 		
-//		CreateBubbles(pane, selectedNoteArray, noteXPos);
-		
 		// update note bubbles per combo box selected index
 		stringBaseNoteCBox.setOnAction(new EventHandler<ActionEvent>()
 		{
@@ -110,15 +108,6 @@ public class GuitarString extends Line
 		stringBaseNoteCBox.setLayoutX(xLayout);
 		stringBaseNoteCBox.setLayoutY(yLayout);
 		stringBaseNoteCBox.setVisibleRowCount(5);
-		
-	}
-
-	// TODO: currently unused. implement after test.java works?
-	public void CreateBubbles(Pane pane, String[] selectedNoteArray, float[] noteX){
-		
-		for(int i = 0; i < selectedNoteArray.length; i++){
-			
-		}
 		
 	}
 
