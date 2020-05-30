@@ -1,7 +1,6 @@
 package src.guitar;
 
 import java.util.HashMap;
-import java.util.Map;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -17,6 +16,10 @@ import javafx.stage.Stage;
 // 	refactoring: moved Map and Note Bubble code into "Scales" event handler method (still need to figure out a way for all handlers to rearrange note bubbles)
 //	created Group to use group.getChildren().clear() to prevent note bubbles from being drawn on top of one another
 
+// TODO: guitarString needs own HashMap, 
+//		 need to calculate hm values before passing to guitarString hm, 
+//		 when scale/key changes, need to calc new hm and send to guitarString, tell string to update notebubbles
+//		 create method to display notebubbles within guitarString class
 
 public class test extends Application 
 {
@@ -66,32 +69,23 @@ public class test extends Application
 		notesPane.setMaxSize(50, 50);
 		notesPane.autosize();
 		notesPane.setMouseTransparent(true);	// disables mouse events for pane
-
 		group.getChildren().addAll(pane, notesPane);
-		
 		Scene scene = new Scene(group);
-		
 		Fretboard fretboard = new Fretboard(pane, stageHeight, imageHeight, imageWidth, fretCount, imageDir);
 		pane.getChildren().add(fretboard);
 		fretLocations = fretboard.getFretArray();
 		noteX = Guitar.notePosition(fretLocations, fretCount);
-		
 		// Scales combo box (only Major and Minor so far)
 		ComboBox<String> scale = CreateBox("Scale", musicalScales, 450, 5, 0);
-		
 		// store currently selected scale mode Major/Minor (String)
 		selectedScalesItem = scale.getSelectionModel().getSelectedItem();
-		
 		// musical Key combo box (full chromatic)
 		ComboBox<String> key = CreateBox("Key", chromaticScale, 650, 5, 3);
-		
 		// store currently selected item index (int)
 		selectedKeysIndex = key.getSelectionModel().getSelectedIndex();
-		
 		// create guitarString
-		GuitarString guitarString = new GuitarString(pane, stageHeight, imageHeight, imageWidth, 
+		GuitarString guitarString = new GuitarString(pane, notesPane, stageHeight, imageHeight, imageWidth, 
 															stringCount, noteX, 0, hm);	//index 0
-		
 		// store selected guitarstring combo box index
 		int stringBaseNote = guitarString.returnCBoxIndex();
 		
@@ -99,8 +93,6 @@ public class test extends Application
 		
 		// chromatic scale array that begins with the chosen key from combobox (String[])
 		chosenKeyChromatic = guitarString.newChromArray(chromaticScale, selectedKeysIndex);
-
-
 
 		// update note bubbles per combo box selected index
 		scale.setOnAction(new EventHandler<ActionEvent>(){
@@ -111,14 +103,13 @@ public class test extends Application
 		    }
 		});
 		
-		// what should be updated every time an item is selected? 
 		key.setOnAction(new EventHandler<ActionEvent>()
 		{
 		    @Override public void handle(ActionEvent e)
 		    {
 				selectedKeysIndex = key.getSelectionModel().getSelectedIndex();
 				// create new String array beginning from selected note
-				chosenKeyChromatic = guitarString.newChromArray(chromaticScale, selectedKeysIndex);
+				chosenKeyChromatic = GuitarString.newChromArray(chromaticScale, selectedKeysIndex);
 				System.out.println("selected key: "+key.getValue());
 		    }
 		});
@@ -157,7 +148,8 @@ public class test extends Application
 		
 		// at this point notesInKey holds all notes that should be viewed on guitar string
 		// and HashMap has stored 1 for each note to be viewed
-		
+
+// from here		
 		int stringYPos = stageHeight / 2 - imageHeight / 2;
 		int offset = 20;
 		// iterates through Map and turn on/off noteBubbles
@@ -175,12 +167,13 @@ public class test extends Application
 			notesPane.getChildren().add(bubble);
 
 		}
+// to here goes in GuitarString
 		
 	}
 	
 	public <T> ComboBox<T> CreateBox(String name, T[] array, int xLayout, int visibleRows, int selectionIndex){
 		
-		// musical Key combo box (full chromatic)
+//		// musical Key combo box (full chromatic)
 		ComboBox<T> box = new ComboBox<>();
 		
 		for(int i = 0; i < array.length; i++){

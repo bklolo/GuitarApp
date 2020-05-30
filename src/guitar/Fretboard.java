@@ -30,8 +30,6 @@ public class Fretboard extends Line {
 		Inlays(pane, stageHeight, fretCount);
 		Nut(pane, stageHeight, imageHeight);
 		
-
-		
 	}
 
 	public void Frets(int stageHeight, int imageHeight){

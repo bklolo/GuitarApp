@@ -2,6 +2,7 @@ package src.guitar;
 
 import java.io.File;
 import javafx.application.Application;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -27,13 +28,21 @@ public class Main extends Application{
 	@Override
 	public void start(Stage stage){
 		
+		Group group = new Group();
 		Pane pane = new Pane();
+		Pane notesPane = new Pane();
+		group.getChildren().addAll(pane, notesPane);		
+//		notesPane.setStyle("-fx-border-color: white");	// used to determine pane width/height and location
+//		notesPane.setMaxSize(50, 50);
+		notesPane.autosize();
+		notesPane.setMouseTransparent(true);	// disables mouse events for pane
+		
 		pane.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 		pane.setPrefHeight(stageHeight - 42);
 		
-		new Guitar(pane, stageHeight, stageWidth, imageHeight, imageWidth, imageDir);
+		new Guitar(pane, notesPane, stageHeight, stageWidth, imageHeight, imageWidth, imageDir);
 		
-		Scene scene = new Scene(pane, stageWidth, stageHeight, Color.BLACK);
+		Scene scene = new Scene(group, stageWidth, stageHeight, Color.BLACK);
 
 		scene.setFill(Color.BLACK);
 		stage.setMinWidth(stageWidth + 8);
