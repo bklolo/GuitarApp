@@ -12,94 +12,88 @@ import javafx.scene.paint.Color;
 
 public class Guitar {
 
-	private static int fretCount = 12;
-	private static int stringCount = 6;
-	int selectedKeysIndex;
 	private float[] fretLocations;
 	private float[] noteXPos;
-	String[] chromaticScale = { "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#" };
-	String[] musicalScales = { "Major", "Minor" };
-	String selectedScalesItem;
-	HashMap<String, Integer> hm = new HashMap<>();
+	private static int fretCount = 12;
+	private static int stringCount = 6;
 	int[] usedScaleArray = new int[8];
 	int[] minorScale = {0,1,0,1,1,0,1,1};
 	int[] majorScale = {0,1,1,0,1,1,1,0};
+	int selectedKeysIndex;
+	String[] chromaticScale = { "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#" };
+	String[] musicalScales = { "Major", "Minor" };
 	String[] chosenKeyChromatic;
 	String[] notesInKey = new String[8];
-	ArrayList<GuitarString> guitarStringList = new ArrayList<>();
+	String selectedScalesItem;
+	ArrayList<GuitarString> guitarStringList = new ArrayList<>();								// holds all GuitarStrings
+	HashMap<String, Integer> hm = new HashMap<>();												// stores (String)notes (Integer)values used to display notebubbles on guitar
 
-	Guitar(Pane pane, Pane notesPane, int stageHeight, int stageWidth, int imageHeight, int imageWidth,
+	Guitar(Pane mainPane, Pane guitarStringsPane, int stageHeight, int stageWidth, int imageHeight, int imageWidth,
 			String imageDir) {
-		// Fretboard class: wood image, frets, nut, inlays, calculations, etc.
-		Fretboard fretboard = new Fretboard(pane, stageHeight, imageHeight, imageWidth, fretCount, imageDir);
+		
+		Fretboard fretboard = new Fretboard(mainPane, stageHeight, imageHeight, imageWidth, fretCount, imageDir);	// Fretboard class: wood image, frets, nut, inlays, calculations, etc.
 		fretLocations = fretboard.getFretArray();
-
-		// use fret location intervals to position note bubbles (halfway between
-		// each fret)
-		noteXPos = notePosition(fretLocations, fretCount);
-
-		ComboBox<String> scale = CreateBox("Scale", musicalScales, 450, 5, 0);
-		selectedScalesItem = scale.getSelectionModel().getSelectedItem();
-		Label scaleLabel = new Label("Scale");
+		noteXPos = notePosition(fretLocations, fretCount);										// use fret location intervals to position note bubbles (halfway-point between each fret)
+		
+		ComboBox<String> scale = CreateBox("Scale", musicalScales, 450, 5, 0);					// Scale combobox used to change the scale to play in
+		selectedScalesItem = scale.getSelectionModel().getSelectedItem();						// store the item selected from Scale
+		ComboBox<String> key = CreateBox("Key", chromaticScale, 650, 5, 3);						// Key combobox used to change the key to play in
+		selectedKeysIndex = key.getSelectionModel().getSelectedIndex();							// store the index selected from Key
+		
+		Label scaleLabel = new Label("Scale");													// text object to label Scale combobox
 		scaleLabel.setTextFill(Color.AZURE);
 		scaleLabel.setLayoutX(450 - 30);
-
-		ComboBox<String> key = CreateBox("Key", chromaticScale, 650, 5, 3);
-		selectedKeysIndex = key.getSelectionModel().getSelectedIndex();
-		Label keyLabel = new Label("Key");
+		Label keyLabel = new Label("Key");														// text object to label Key combobox
 		keyLabel.setTextFill(Color.AZURE);
 		keyLabel.setLayoutX(650 - 30);
-
-		chosenKeyChromatic = GuitarString.newChromArray(chromaticScale, selectedKeysIndex);
 		
-		// METHOD CALL: calculate HashMap contents based on CBoxes, pass to
-		 updateViewableNotes();
-
-		// Create each guitar string
-		createGuitarStrings(pane, notesPane, stageHeight, imageHeight, imageWidth);
-
-		// update note bubbles per selected Scale cBox item
-		scale.setOnAction(new EventHandler<ActionEvent>() {
+		chosenKeyChromatic = GuitarString.newChromArray(chromaticScale, selectedKeysIndex);		// create chromatic scale beginning at chosen Key 
+		
+		updateViewableNotes();																	// calculate HashMap contents based on CBoxes, pass to
+		
+		createGuitarStrings(mainPane, guitarStringsPane, stageHeight, imageHeight, imageWidth);		// Create each guitar string
+		
+		scale.setOnAction(new EventHandler<ActionEvent>() {										// update note displayed per selected Scale cBox item
 			@Override
 			public void handle(ActionEvent e) {
-				// clear notesPane before redrawing
-				notesPane.getChildren().clear();
+				clearEachGuitarStringPane();
 				selectedScalesItem = scale.getSelectionModel().getSelectedItem();
-				// update hashmap values and replace existing GuitarString maps with 
-				updateAndReplaceHash();
-			}});
-		// update note bubbles per selected Key cBox item
-		key.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent e) {
-				// clear notesPane before redrawing
-				notesPane.getChildren().clear();
-				// store selected Key cBox index
-				selectedKeysIndex = key.getSelectionModel().getSelectedIndex();
-				// create new String array beginning from selected index
-				chosenKeyChromatic = GuitarString.newChromArray(chromaticScale, selectedKeysIndex);
-				// update hashmap values and replace existing GuitarString maps with 
-				updateAndReplaceHash();
+				updateAndReplaceHash();															// update hashmap values and replace existing GuitarString maps with 
 			}});
 		
-		// add nodes to Pane
-		pane.getChildren().addAll(scale, scaleLabel, key, keyLabel);
+		key.setOnAction(new EventHandler<ActionEvent>() {										// update note bubbles per selected Key cBox item
+			@Override
+			public void handle(ActionEvent e) {
+				clearEachGuitarStringPane();															// clear each GuitarString's pane (all string change vs single string change)
+				selectedKeysIndex = key.getSelectionModel().getSelectedIndex();							// store selected Key cBox index
+				chosenKeyChromatic = GuitarString.newChromArray(chromaticScale, selectedKeysIndex);		// create new String array beginning from selected index
+				updateAndReplaceHash();																	// update hashmap values and replace existing GuitarString maps with
+			}
+
+			});
+		
+		mainPane.getChildren().addAll(scale, scaleLabel, key, keyLabel, guitarStringsPane);				// add nodes to Pane
+	}
+	
+	// iterate through and clear each GuitarString's pane before redrawing NoteBubbles
+	private void clearEachGuitarStringPane() {
+		for(GuitarString g : guitarStringList){
+			g.getNotesPane().getChildren().clear();
+		}
 	}
 
-	private void createGuitarStrings(Pane pane, Pane notesPane, int stageHeight, int imageHeight, int imageWidth) {
+	private void createGuitarStrings(Pane mainPane, Pane guitarStringsPane, int stageHeight, int imageHeight, int imageWidth) {
 		for (int i = 0; i < stringCount; i++) {
-			GuitarString guitarString = new GuitarString(pane, notesPane, stageHeight, imageHeight, imageWidth, stringCount,
+			GuitarString guitarString = new GuitarString(mainPane, guitarStringsPane, stageHeight, imageHeight, imageWidth, stringCount,
 					noteXPos, i, hm, chromaticScale);
 			guitarStringList.add(guitarString);
-			pane.getChildren().add(guitarString);
+			guitarStringsPane.getChildren().add(guitarString);											// add guitarStrings to guitarStringPane
 		}
 	}
 	
 	private void updateAndReplaceHash() {
-		// update HashMap values
-		updateViewableNotes();
-		// replace all GuitarString's HashMap with new one
-		for(GuitarString g : guitarStringList){
+		updateViewableNotes();																	// calculate HashMap contents based on CBoxes, pass to
+		for(GuitarString g : guitarStringList){													// update each GuitarString's HashMap based on new combobox selections
 			g.setNotesInKey(hm, chromaticScale, noteXPos);
 		}
 	}

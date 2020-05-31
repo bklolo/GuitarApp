@@ -12,7 +12,6 @@ public class NoteBubble extends Circle {
 
 	NoteBubble(int offset, float stringYPos) 
 	{
-		
 		super(radius, color);
 		super.setFill(color);
 		super.setStroke(Color.BLACK);
@@ -21,7 +20,6 @@ public class NoteBubble extends Circle {
 		super.setCenterY(bubbleY-5);
 		super.setCenterX(bubbleX);
 		super.setOpacity(.75);
-
 	}
 
 	public Color getColor() 

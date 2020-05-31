@@ -17,6 +17,7 @@ public class Main extends Application{
 	int imageHeight = 200;
 	int imageWidth = stageWidth;
 	String imageDir = ".\\maple fretboard.jpg";
+//	String imageDir = "";
 	String dirPath = "C:\\Users\\Bklolo\\Documents\\Git Repositories\\Music Apps\\GuitarApp";
 	String dirName = "data";
 	File file = new File(dirPath, dirName);
@@ -30,17 +31,18 @@ public class Main extends Application{
 		
 		Group group = new Group();
 		Pane pane = new Pane();
-		Pane notesPane = new Pane();
-		group.getChildren().addAll(pane, notesPane);		
-//		notesPane.setStyle("-fx-border-color: white");	// used to determine pane width/height and location
-//		notesPane.setMaxSize(50, 50);
-		notesPane.autosize();
-		notesPane.setMouseTransparent(true);	// disables mouse events for pane
+		Pane guitarStringsPane = new Pane();
+		group.getChildren().addAll(pane, guitarStringsPane);
+//		pane.getChildren().add(guitarStringsPane);
+//		guitarStringsPane.setStyle("-fx-border-color: white");										// used to determine pane width/height and location
+//		guitarStringsPane.setMaxSize(50, 50);
+		guitarStringsPane.autosize();
+		guitarStringsPane.setMouseTransparent(true);												// disables mouse events for pane
 		
 		pane.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 		pane.setPrefHeight(stageHeight - 42);
 		
-		new Guitar(pane, notesPane, stageHeight, stageWidth, imageHeight, imageWidth, imageDir);
+		new Guitar(pane, guitarStringsPane, stageHeight, stageWidth, imageHeight, imageWidth, imageDir);
 		
 		Scene scene = new Scene(group, stageWidth, stageHeight, Color.BLACK);
 
