@@ -17,4 +17,5 @@ public class Inlay extends Circle {
 		float inlayPos = (fretArray[index] - ((fretArray[index] - fretArray[index - 1]) / 2)) * 100;
 		return inlayPos;
 	}
+	
 }

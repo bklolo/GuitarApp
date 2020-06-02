@@ -7,11 +7,12 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class test extends Application 
 {
-	
 	//stage vars
 	int stageHeight = 400;
 	int stageWidth = 1235;
@@ -20,6 +21,7 @@ public class test extends Application
 	Group group = new Group();
 	Pane pane = new Pane();
 	Pane notesPane = new Pane();
+	Text text = new Text();
 
 	public static void main(String[] args) 
 	{ 
@@ -29,8 +31,6 @@ public class test extends Application
 	@Override
 	public void start(Stage stage) 
 	{
-
-		
 		Scene scene = new Scene(pane);
 		Circle circle = new Circle();
 		circle.setRadius(200);
@@ -42,9 +42,13 @@ public class test extends Application
 		rect.setFill(Color.RED);
 		rect.setLayoutX(100);
 		
+		text.setText("asdf");
+		text.setFont(Font.font ("Verdana", 20));
+		text.setFill(Color.RED);
+		text.setLayoutY(imageHeight/2);
 		
 		notesPane.getChildren().add(rect);
-		pane.getChildren().addAll(notesPane, circle);
+		pane.getChildren().addAll(notesPane, circle, text);
 		
 		
 		scene.setFill(Color.BLACK);
@@ -56,6 +60,5 @@ public class test extends Application
 		stage.setScene(scene);
 		stage.show();
 
-	}
-	
+	}	
 }
