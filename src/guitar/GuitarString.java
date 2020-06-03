@@ -22,12 +22,12 @@ public class GuitarString extends Line {
 	private ComboBox<String> guitarStringCBox = new ComboBox<String>();
 	private HashMap<String, Integer> notesInKey = new HashMap<>();
 	private Pane notesPane = new Pane();
-	private String selectedKeyItem;
+	private String selectedKeyItem = "";
 
 	GuitarString(Pane pane, Pane guitarStringsPane, int stageHeight, int imageHeight, 
 					int imageWidth, int stringCount, float[] noteXPos, int index, 
 					HashMap<String, Integer> notesInKey, String[] chromaticScale, String selectedKeyItem) {
-		
+		System.out.println("from GuitarString: "+selectedKeyItem);
 		Line guitarString = new Line();
 		notesPane.setMouseTransparent(true);																// disables mouse events for pane
 		this.selectedKeyItem = selectedKeyItem;
@@ -39,6 +39,9 @@ public class GuitarString extends Line {
 		rootNoteSelector(chromaticScale, index, xLayout, yLayout);											// create a cBox used to select root note of each string
 		chosenStringNote = guitarStringCBox.getSelectionModel().getSelectedIndex();							// index of this cBoxes currently selected note
 		arrayFromChosenStringNote = newChromArray(chromaticScale, chosenStringNote);						// array of chromatic notes, beginning from current cBoxes selected index
+		drawNotes(guitarStringsPane, notesInKey, chromaticScale, noteXPos, selectedKeyItem);
+		pane.getChildren().add(guitarStringCBox);
+		guitarStringsPane.getChildren().addAll(guitarString, notesPane);
 		
 		// GuitarString CBox Event Handler
 		guitarStringCBox.setOnAction(new EventHandler<ActionEvent>() {										// update note bubbles per combo box selected index
@@ -47,11 +50,8 @@ public class GuitarString extends Line {
 				notesPane.getChildren().clear();															// clear notesPane before redrawing
 				chosenStringNote = guitarStringCBox.getSelectionModel().getSelectedIndex();					// store selected guitarString cBox index
 				arrayFromChosenStringNote = newChromArray(chromaticScale, chosenStringNote);				// create new String array beginning from selected note
-				drawNotes(guitarStringsPane, notesInKey, chromaticScale, noteXPos, selectedKeyItem);		// call drawNotes to redraw notes
-			}});
-		drawNotes(guitarStringsPane, notesInKey, chromaticScale, noteXPos, selectedKeyItem);
-		pane.getChildren().add(guitarStringCBox);
-		guitarStringsPane.getChildren().addAll(guitarString, notesPane);
+				drawNotes(guitarStringsPane, notesInKey, chromaticScale, noteXPos, GuitarString.this.selectedKeyItem);		// GuitarString.this.selectedKeyItem used because EventHandler
+			}});																											// is the same as creating a new subclass
 	
 	}
 	// changes the base note of the guitar string (0th/12th fret)
@@ -138,7 +138,7 @@ public class GuitarString extends Line {
 								String[] chromaticScale, float[] noteXPos, String selectedKeyItem) {
 		this.notesInKey = hm;
 		this.selectedKeyItem = selectedKeyItem;
-		System.out.println("passed from Guitar to setNotesInKey(): " + selectedKeyItem);
+		System.out.println("from setNotesInKey: " + selectedKeyItem);
 		drawNotes(guitarStringsPane, notesInKey, chromaticScale, noteXPos, selectedKeyItem);
 	}
 	
