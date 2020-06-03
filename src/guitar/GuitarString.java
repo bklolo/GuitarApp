@@ -67,7 +67,7 @@ public class GuitarString extends Line {
 					notesPane.getChildren().addAll(bubble, bubble.getText());
 				}
 				
-				else{																						// if the note is the tonic to the chosen key, color it BLACK
+				else{																						// if the note is the tonic to the chosen key, color it ORANGE
 					NoteBubble bubble = new NoteBubble(offset, bubbleX, stringYPos, 
 												arrayFromChosenStringNote[i], Color.ORANGE);
 					notesPane.getChildren().addAll(bubble, bubble.getText());

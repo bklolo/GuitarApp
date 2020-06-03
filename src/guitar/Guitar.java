@@ -27,7 +27,7 @@ public class Guitar {
 	private static int selectedKeyIndex;
 	private String[] chromaticScale = { "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#" };
 	private String[] scales = { "Major", "Minor", "Dorian", "MPent", "mPent", "Blues"};
-	private String[] presetTunings = {"Standard", "DADGAD", "Open G", "Open D", "C6", "Modal D"};
+	private String[] presetTunings = {"Standard", "DADGAD", "Open G", "Open D", "C6", "Modal D"};		// create all Open tunings
 	private String[] tuningStandard = {"E","B","G","D","A","E"};										// GuitarStrings are currently created beginning with high E
 	private String[] DADGAD = {"D","A","G","D","A","D"};
 	private String[] chosenKeyChromaticScale;
