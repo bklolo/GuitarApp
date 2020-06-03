@@ -27,6 +27,9 @@ public class Guitar {
 	private static int selectedKeyIndex;
 	private String[] chromaticScale = { "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#" };
 	private String[] scales = { "Major", "Minor", "Dorian", "MPent", "mPent", "Blues"};
+	private String[] presetTunings = {"Standard", "DADGAD", "Open G", "Open D", "C6", "Modal D"};
+	private String[] tuningStandard = {"E","B","G","D","A","E"};										// GuitarStrings are currently created beginning with high E
+	private String[] DADGAD = {"D","A","G","D","A","D"};
 	private String[] chosenKeyChromaticScale;
 	private String[] notesInKey = new String[8];
 	private String selectedScalesItem;
@@ -37,28 +40,37 @@ public class Guitar {
 	private Pane guitarStringsPane = new Pane();
 	private ComboBox<String> scale = new ComboBox<>();
 	private ComboBox<String> key = new ComboBox<>();
+	private ComboBox<String> tunings = new ComboBox<>();
+	
 	
 	Guitar(Pane mainPane, Pane guitarStringsPane, int stageHeight, int stageWidth, int imageHeight, int imageWidth,
 			String imageDir) {
 		this.mainPane = mainPane;
 		this.guitarStringsPane = guitarStringsPane;
+		int cBoxOrigin = imageWidth/2;
 		Fretboard fretboard = new Fretboard(mainPane, stageHeight, imageHeight, imageWidth, fretCount, imageDir);	// Fretboard class: wood image, frets, nut, inlays, calculations, etc.
 		fretLocations = fretboard.getFretArray();
 		noteXPos = notePosition(fretLocations, fretCount);												// use fret location intervals to position note bubbles (halfway-point between each fret)
 		
-		scale = CreateBox("Scale", scales, 450, 5, 0);											// Scale combobox used to change the scale to play in
+		scale = CreateBox("Scale", scales, cBoxOrigin, 5, 0);											// Scale combobox used to change the scale to play in
 		selectedScalesItem = scale.getSelectionModel().getSelectedItem();								// store the item selected from Scale
 		
-		key = CreateBox("Key", chromaticScale, 650, 5, 3);												// Key combobox used to choose the key to play in
+		key = CreateBox("Key", chromaticScale, cBoxOrigin+200, 5, 3);												// Key combobox used to choose the key to play in
 		selectedKeyIndex = key.getSelectionModel().getSelectedIndex();									// store the index selected from Key
 		selectedKeyItem = key.getSelectionModel().getSelectedItem();									// store the item selected from Key
 		
+		tunings = CreateBox("Tunings", presetTunings, cBoxOrigin-200, 5, 0);							// Tunings combobox used to choose a preset guitar tuning
+		
 		Label scaleLabel = new Label("Scale");															// label Scale combobox
 		scaleLabel.setTextFill(Color.AZURE);
-		scaleLabel.setLayoutX(450 - 30);
+		scaleLabel.setLayoutX(cBoxOrigin - 30);
 		Label keyLabel = new Label("Key");																// label Key combobox
 		keyLabel.setTextFill(Color.AZURE);
-		keyLabel.setLayoutX(650 - 30);
+		keyLabel.setLayoutX(cBoxOrigin+170);
+		
+		Label tuningsLabel = new Label("Preset Tuning");												// label Tuning combobox
+		tuningsLabel.setTextFill(Color.AZURE);
+		tuningsLabel.setLayoutX(cBoxOrigin - 275);
 		
 		chosenKeyChromaticScale = GuitarString.newChromArray(chromaticScale, selectedKeyIndex);			// create chromatic scale beginning at chosen Key 
 		
@@ -84,8 +96,28 @@ public class Guitar {
 				updateAndReplaceHash();																	// update hashmap values and replace existing GuitarString maps with
 			}
 			});
+		tunings.setOnAction(new EventHandler<ActionEvent>() {												// update note bubbles per selected Tuning cBox item
+			@Override
+			public void handle(ActionEvent e) {
+				String selectedTuningItem = tunings.getSelectionModel().getSelectedItem();
+				GuitarString currentString;
+				
+				if(selectedTuningItem.equals(presetTunings[0])){
+					for(int i = 0; i < tuningStandard.length; i++){
+						currentString = guitarStringList.get(i);
+						currentString.setGuitarStringCBoxItem(tuningStandard[i]);
+					}
+				}
+				else if(selectedTuningItem.equals(presetTunings[1])){
+					for(int i = 0; i < tuningStandard.length; i++){
+						currentString = guitarStringList.get(i);
+						currentString.setGuitarStringCBoxItem(DADGAD[i]);
+					}
+				}
+			}
+			});
 
-		mainPane.getChildren().addAll(scale, scaleLabel, key, keyLabel, guitarStringsPane);				// add nodes to Pane
+		mainPane.getChildren().addAll(scale, scaleLabel, key, keyLabel, tunings, tuningsLabel, guitarStringsPane);				// add nodes to Pane
 	}
 	
 	// iterate through and clear each GuitarString's pane before redrawing NoteBubbles
