@@ -1,5 +1,4 @@
 # GuitarApp
-This application displays the notes within a chosen key and scale on each individual guitar string, with a selected root, in order to experiment in different string tunings.
+This application is a tool for displaying notes on the fretboard. It allows you to choose the Key to play in, the Scale to visualize, and also the tuning of each string.
 
-To practice Java, I'm creating a simple guitar app. This app will be for anyone that wants to visualize scales while they experiment 
-with random tunings on the guitar.
+Made with JavaFX.
