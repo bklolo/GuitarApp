@@ -3,5 +3,4 @@ This application is a tool for visualizing music notes on the fretboard. It allo
 
 Made with JavaFX.
 
-!(bklolo.github.com/GuitarAppl/src/GuitarScales.PNG)
-
+<img src="/src/GuitarScales.png" alt="My cool logo"/>
