@@ -1,4 +1,3 @@
-package src.guitar;
 
 import java.util.HashMap;
 
@@ -9,6 +8,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+
 
 public class GuitarString extends Line {
 	
@@ -23,11 +23,10 @@ public class GuitarString extends Line {
 	private HashMap<String, Integer> notesInKey = new HashMap<>();
 	private Pane notesPane = new Pane();
 	private String selectedKeyItem = "";
-
+	
 	GuitarString(Pane pane, Pane guitarStringsPane, int stageHeight, int imageHeight, 
 					int imageWidth, int stringCount, float[] noteXPos, int index, 
 					HashMap<String, Integer> notesInKey, String[] chromaticScale, String selectedKeyItem) {
-		System.out.println("from GuitarString: "+selectedKeyItem);
 		Line guitarString = new Line();
 		notesPane.setMouseTransparent(true);																// disables mouse events for pane
 		this.selectedKeyItem = selectedKeyItem;
@@ -57,25 +56,23 @@ public class GuitarString extends Line {
 	// changes the base note of the guitar string (0th/12th fret)
 	public void drawNotes(Pane guitarStringsPane, HashMap<String, Integer> notesInKey, 
 							String[] chromaticScale, float[] noteXPos, String itemFromKeyCBox) {	
-		
+		Color color = null;
 		for (int i = 0; i < chromaticScale.length; i++) {													// iterates through Map and turns off noteBubbles not in scale
 			bubbleX = noteXPos[i == 0 ? 11 : i - 1] * 100;													// draw notebubble at fret 12 when i = 0, draw at i-1 otherwise
 			if (notesInKey.get(arrayFromChosenStringNote[i]) != 0) {										// if the value in HashMap isn't zero
 				if(!arrayFromChosenStringNote[i].equals(itemFromKeyCBox)){									// if the note isn't the tonic to the key, create and color ALICEBLUE
-					NoteBubble bubble = new NoteBubble(offset, bubbleX, stringYPos, 
-												arrayFromChosenStringNote[i], Color.LIGHTSTEELBLUE);
-					notesPane.getChildren().addAll(bubble, bubble.getText());
+					color = Color.LIGHTSTEELBLUE;
 				}
 				
 				else{																						// if the note is the tonic to the chosen key, color it ORANGE
-					NoteBubble bubble = new NoteBubble(offset, bubbleX, stringYPos, 
-												arrayFromChosenStringNote[i], Color.ORANGE);
-					notesPane.getChildren().addAll(bubble, bubble.getText());
+					color = Color.ORANGE;
 				}
+				
+				NoteBubble bubble = new NoteBubble(offset, bubbleX, stringYPos, 
+													arrayFromChosenStringNote[i], color);
+				notesPane.getChildren().addAll(bubble, bubble.getText());
 			}
-			
 		}
-		
 	}
 	// rearranges the chromatic array to begin with the currently selected note
 	public static String[] newChromArray(String[] array, int startingIndex) {
@@ -114,7 +111,14 @@ public class GuitarString extends Line {
 	private void stringProperties(Line guitarstring, int imageWidth, int index, int offset) {
 		guitarstring.setScaleY(2.5 + index / 2);
 		guitarstring.setLayoutY(offset);
-		guitarstring.setStroke(Color.rgb(255, 175, 51));
+//		guitarstring.setStroke(Color.rgb(255, 175, 51));
+		Color stringColor = null;
+		if(index <= 2){
+			stringColor = Color.CORNSILK;
+		} else{
+			stringColor = Color.LIGHTGOLDENRODYELLOW;
+		}
+		guitarstring.setStroke(stringColor);
 		guitarstring.setStartX(0);
 		guitarstring.setEndX(imageWidth);
 		guitarstring.setStartY(stringYPos);
@@ -138,7 +142,6 @@ public class GuitarString extends Line {
 								String[] chromaticScale, float[] noteXPos, String selectedKeyItem) {
 		this.notesInKey = hm;
 		this.selectedKeyItem = selectedKeyItem;
-		System.out.println("from setNotesInKey: " + selectedKeyItem);
 		drawNotes(guitarStringsPane, notesInKey, chromaticScale, noteXPos, selectedKeyItem);
 	}
 	

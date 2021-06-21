@@ -35,3 +35,11 @@
 /test$3.class
 /Handler.class
 /Guitar$3.class
+/audio.class
+/Audio$captureAndPlayThread.class
+/Audio.class
+/Tuner.class
+/Tuner$captureAndPlayThread.class
+/tarsosTuner.class
+/tarsosTuner$1$1.class
+/tarsosTuner$1.class

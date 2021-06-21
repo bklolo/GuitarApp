@@ -1,7 +1,4 @@
-package src.guitar;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -77,19 +74,17 @@ public class Fretboard extends Line {
 	// Generates the background for the guitar fretboard
 	private Image FretboardImage(Pane pane, int stageHeight, int imageHeight, int imageWidth, String jpg) 
 	{
-		Image test = null;
-		try 
+		//InputStream stream = this.getClass().getClassLoader().getResourceAsStream(jpg);
+		Image image = null;
+		try
 		{
-			test = new Image(new FileInputStream(jpg));
-		} 
-		catch (FileNotFoundException e) 
-		{
-
-			System.out.println("No background image found.");
-		}
-		
-		Image image = test;
+			image = new Image(jpg);	/*double requestedWidth,double requestedHeight,boolean preserveRatio,boolean smooth*/ 
 		// create imageview object
+		
+		}
+		catch(Exception e){
+			System.out.println("");
+		}
 		ImageView imageView = new ImageView(image);
 		imageView.setX(0);
 		imageView.setY(stageHeight / 2 - imageHeight / 2);
