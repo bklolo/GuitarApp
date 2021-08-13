@@ -27,6 +27,11 @@ public class Guitar {
 	private String[] chromaticScale = { "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#" };
 	private String[] scales = { "Major", "Minor", "Dorian", "MPent", "mPent", "Blues", "PhrygDom"};
 	private String[] presetTunings = {"Standard", "DADGAD", "Open G", "Open D", "C6"};					// create all Open tunings
+	// List of common chords
+	private String[] chordList = {"A","Am","A#","A#m","B","Bm","C","Cm","C#","C#m","D","Dm","D#",
+									"D#m","E","Em","F","Fm","F#","F#m","G","Gm","G#","G#m"};
+	private String[] A = {};
+	// Preset tunings
 	private String[] standard = {"E","B","G","D","A","E"};												// GuitarStrings are currently created beginning with high E
 	private String[] DADGAD = {"D","A","G","D","A","D"};
 	private String[] openG = {"D","G","D","G","B","D"};
@@ -35,6 +40,7 @@ public class Guitar {
 	private String[] chosenKeyChromaticScale;
 	private String[] notesInKey = new String[8];
 	private String selectedScalesItem;
+	private String selectedChordsItem;
 	public String selectedKeyItem;
 	private ArrayList<GuitarString> guitarStringList = new ArrayList<>();				// holds all GuitarString objects
 	private HashMap<String, Integer> hm = new HashMap<>();								// stores (String)notes, (Integer)values used to display notebubbles on guitar
@@ -43,9 +49,11 @@ public class Guitar {
 	private ComboBox<String> scale = new ComboBox<>();
 	private ComboBox<String> key = new ComboBox<>();
 	private ComboBox<String> tunings = new ComboBox<>();
+
+	// TODO: create chord arrays
+	private ComboBox<String> chords = new ComboBox<>();									// holds chords available in key
 	
-	// TODO: create chord arrays, search
-	
+	// TODO: simplify button locations
 	Guitar(Pane mainPane, Pane guitarStringsPane, int stageHeight, int stageWidth, int imageHeight, int imageWidth,
 			String imageDir) {
 		this.mainPane = mainPane;
@@ -54,25 +62,35 @@ public class Guitar {
 		Fretboard fretboard = new Fretboard(mainPane, stageHeight, imageHeight, imageWidth, fretCount, imageDir);	// Fretboard class: wood image, frets, nut, inlays, calculations, etc.
 		fretLocations = fretboard.getFretArray();
 		noteXPos = notePosition(fretLocations, fretCount);								// use fret location intervals to position note bubbles (halfway-point between each fret)
+		
 		scale = CreateBox("Scale", scales, cBoxOrigin, 5, 0);							// Scale combobox used to change the scale to play in
 		selectedScalesItem = scale.getSelectionModel().getSelectedItem();				// store the item selected from Scale
-		key = CreateBox("Key", chromaticScale, cBoxOrigin+200, 5, 3);					// Key combobox used to choose the key to play in
-		selectedKeyIndex = key.getSelectionModel().getSelectedIndex();					// store the index selected from Key
-		selectedKeyItem = key.getSelectionModel().getSelectedItem();					// store the item selected from Key
-		tunings = CreateBox("Tunings", presetTunings, cBoxOrigin-200, 5, 0);			// Tunings combobox used to choose a preset guitar tuning
 		Label scaleLabel = new Label("Scale");											// label Scale combobox
 		scaleLabel.setTextFill(Color.AZURE);
 		scaleLabel.setLayoutX(cBoxOrigin - 30);
+		
+		key = CreateBox("Key", chromaticScale, cBoxOrigin+200, 5, 3);					// Key combobox used to choose the key to play in
+		selectedKeyIndex = key.getSelectionModel().getSelectedIndex();					// store the index selected from Key
+		selectedKeyItem = key.getSelectionModel().getSelectedItem();					// store the item selected from Key
 		Label keyLabel = new Label("Key");												// label Key combobox
 		keyLabel.setTextFill(Color.AZURE);
 		keyLabel.setLayoutX(cBoxOrigin+170);
+		
+		tunings = CreateBox("Tunings", presetTunings, cBoxOrigin-200, 5, 0);			// Tunings combobox used to choose a preset guitar tuning
 		Label tuningsLabel = new Label("Preset Tuning");								// label Tuning combobox
 		tuningsLabel.setTextFill(Color.AZURE);
 		tuningsLabel.setLayoutX(cBoxOrigin - 275);
+		
+		// TODO: CHORD
+		chords = CreateBox("Chords", chordList, cBoxOrigin + 400, 5, 0);
+		Label chordsLabel = new Label("Chords");										// label Chords combobox
+		chordsLabel.setTextFill(Color.AZURE);
+		chordsLabel.setLayoutX(cBoxOrigin + 350);
+		
 		chosenKeyChromaticScale = GuitarString.newChromArray(chromaticScale, selectedKeyIndex);			// create chromatic scale beginning at chosen Key 
 		updateViewableNotesInHashMap();													// calculate HashMap contents based on CBoxes, pass to
 		createGuitarStrings(stageHeight, imageHeight, imageWidth);						// Create each guitar string
-		mainPane.getChildren().addAll(scale, scaleLabel, key, keyLabel, tunings, tuningsLabel, guitarStringsPane);				// add nodes to Pane
+		mainPane.getChildren().addAll(scale, scaleLabel, key, keyLabel, tunings, tuningsLabel, chords, chordsLabel, guitarStringsPane);				// add nodes to Pane
 
 		// Preset Tuning ComboBox (Standard, DADGAD, etc)
 		tunings.setOnAction(new EventHandler<ActionEvent>() {							// update note bubbles per selected Tuning cBox item
@@ -114,7 +132,7 @@ public class Guitar {
 			}});
 		
 		// Scale ComboBox
-		scale.setOnAction(new EventHandler<ActionEvent>() {								// update note displayed per selected Scale cBox item
+		scale.setOnAction(new EventHandler<ActionEvent>() {								// update notes displayed to selected Scale item
 			@Override
 			public void handle(ActionEvent e) {
 				clearEachGuitarStringPane();
@@ -130,6 +148,15 @@ public class Guitar {
 				selectedKeyIndex = key.getSelectionModel().getSelectedIndex();			// store selected Key cBox index
 				selectedKeyItem = key.getSelectionModel().getSelectedItem();
 				chosenKeyChromaticScale = GuitarString.newChromArray(chromaticScale, selectedKeyIndex);	// create new String array beginning from selected index
+				updateAndReplaceHash();													// update hashmap values and replace existing GuitarString maps with
+			}});
+		
+		// Scale ComboBox
+		chords.setOnAction(new EventHandler<ActionEvent>() {								// update note displayed per selected Scale cBox item
+			@Override
+			public void handle(ActionEvent e) {
+				clearEachGuitarStringPane();
+				selectedChordsItem = chords.getSelectionModel().getSelectedItem();
 				updateAndReplaceHash();													// update hashmap values and replace existing GuitarString maps with
 			}});
 	}
@@ -190,11 +217,11 @@ public class Guitar {
 
 	// returns calculated locations of NoteBubbles from 1st - 12th frets
 	public static float[] notePosition(float[] fretLocation, int fretCount) {
-		float[] noteLocation = new float[fretCount];
-		noteLocation[0] = fretLocation[0] / 2;
+		float[] noteLocation = new float[fretCount];									// create array of length fretCount
+		noteLocation[0] = fretLocation[0] / 2;											// place noteBubble at half distance of first fret; first bubble taken care of
 
-		for (int i = 0; i < fretLocation.length - 1; i++) {
-			noteLocation[i + 1] = fretLocation[i + 1] - (fretLocation[i + 1] - fretLocation[i]) / 2;
+		for (int i = 0; i < fretLocation.length - 1; i++) {													// from 0 to (12-1)
+			noteLocation[i + 1] = fretLocation[i + 1] - (fretLocation[i + 1] - fretLocation[i]) / 2;		// note[1] = ( fret[1] - (fret[1] - fret[0]) )
 		}
 		return noteLocation;
 	}

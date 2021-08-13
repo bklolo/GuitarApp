@@ -53,20 +53,22 @@ public class GuitarString extends Line {
 			}});																											// is the same as creating a new subclass
 	
 	}
-	// changes the base note of the guitar string (0th/12th fret)
+	// changes the root note of the guitar string (0th/12th fret)
 	public void drawNotes(Pane guitarStringsPane, HashMap<String, Integer> notesInKey, 
 							String[] chromaticScale, float[] noteXPos, String itemFromKeyCBox) {	
 		Color color = null;
 		for (int i = 0; i < chromaticScale.length; i++) {													// iterates through Map and turns off noteBubbles not in scale
 			bubbleX = noteXPos[i == 0 ? 11 : i - 1] * 100;													// draw notebubble at fret 12 when i = 0, draw at i-1 otherwise
 			if (notesInKey.get(arrayFromChosenStringNote[i]) != 0) {										// if the value in HashMap isn't zero
-				if(!arrayFromChosenStringNote[i].equals(itemFromKeyCBox)){									// if the note isn't the tonic to the key, create and color ALICEBLUE
+				if(!arrayFromChosenStringNote[i].equals(itemFromKeyCBox)){									// and if the note isn't the tonic to the chosen key, color LIGHTSTEELBLUE
 					color = Color.LIGHTSTEELBLUE;
 				}
 				
-				else{																						// if the note is the tonic to the chosen key, color it ORANGE
+				else{																						// else, the note is the tonic to the chosen key, color it ORANGE
 					color = Color.ORANGE;
 				}
+				
+				// TODO: Selected Chord color here?
 				
 				NoteBubble bubble = new NoteBubble(offset, bubbleX, stringYPos, 
 													arrayFromChosenStringNote[i], color);
@@ -75,16 +77,16 @@ public class GuitarString extends Line {
 		}
 	}
 	// rearranges the chromatic array to begin with the currently selected note
-	public static String[] newChromArray(String[] array, int startingIndex) {
-		String[] newArray = new String[13];
-		for (int i = 0; i < array.length; i++) {
-			int pointer = (i + startingIndex) % array.length;
-			newArray[i] = array[pointer];
+	public static String[] newChromArray(String[] array, int startingIndex) {								// selected array, and index you wish it to begin at
+		String[] newArray = new String[13];																	// the new array to bo returned
+		for (int i = 0; i < array.length; i++) {															// selected array: 10	;	starting index = 4	
+			int pointer = (i + startingIndex) % array.length;												// 4%10 = 4 ; ... ; 10%10 = 0 ; 11%10 = 1 ; 12%10 = 2 ; 13%10 = 3 ; 
+			newArray[i] = array[pointer];																	// 0 = 4    ; ... ; 6 = 0     ; 7 = 1	  ; 8 = 2	  ; 9 = 3	  ;
 		}
-		newArray[12] = newArray[0];
+		newArray[12] = newArray[0];																			// 0th fret = 12th fret
 		return newArray;
 	}
-	// changes cbox prompt text based on which guitar string it is associated with
+	// cbox note chosen based on associated string (E,A,D,G,B,E)
 	private void rootNoteSelector(String[] notesArray, int stringNumber, int xLayout, int yLayout) {		
 		for (int i = 0; i < notesArray.length; i++) {
 			guitarStringCBox.getItems().add(notesArray[i]);
@@ -101,7 +103,7 @@ public class GuitarString extends Line {
 			guitarStringCBox.getSelectionModel().select(notesArray[0]);		// a
 		}
 		guitarStringCBox.autosize();
-		guitarStringCBox.setPromptText(String.valueOf(stringNumber)); // default displayed text
+		guitarStringCBox.setPromptText(String.valueOf(stringNumber)); 		// default displayed text
 		guitarStringCBox.setLayoutX(xLayout);
 		guitarStringCBox.setLayoutY(yLayout);
 		guitarStringCBox.setVisibleRowCount(5);
@@ -139,7 +141,7 @@ public class GuitarString extends Line {
 	}
 
 	public void setNotesInKey(Pane guitarStringsPane, HashMap<String, Integer> hm, 
-								String[] chromaticScale, float[] noteXPos, String selectedKeyItem) {
+								String[] chromaticScale, float[] noteXPos, String selectedKeyItem){
 		this.notesInKey = hm;
 		this.selectedKeyItem = selectedKeyItem;
 		drawNotes(guitarStringsPane, notesInKey, chromaticScale, noteXPos, selectedKeyItem);
