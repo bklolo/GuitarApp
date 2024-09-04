@@ -15,10 +15,10 @@ public class GuitarString extends Line {
 	private int offset;
 	private int xLayout;
 	private int yLayout = 50;
-	private int chosenStringNote;
+	private int selectedNote;
 	private float stringYPos;
 	private float bubbleX;
-	private String[] arrayFromChosenStringNote;
+	private String[] chromaticFromSelected;
 	private ComboBox<String> guitarStringCBox = new ComboBox<String>();
 	private HashMap<String, Integer> notesInKey = new HashMap<>();
 	private Pane notesPane = new Pane();
@@ -34,11 +34,16 @@ public class GuitarString extends Line {
 		this.xLayout = 800 - index * 100;																	// the X position value of each guitarString's cBox
 		this.stringYPos = stageHeight / 2 - imageHeight / 2;												// the starting Y position for the set of all guitarStrings
 		this.offset = 20 + index * ((imageHeight - 5) / stringCount);										// the starting Y position, plus offset, of strings from the first string of the set
+		
 		stringProperties(guitarString, imageWidth, index, offset);											// adjust guitarString properties
-		rootNoteSelector(chromaticScale, index, xLayout, yLayout);											// create a cBox used to select root note of each string
-		chosenStringNote = guitarStringCBox.getSelectionModel().getSelectedIndex();							// index of this cBoxes currently selected note
-		arrayFromChosenStringNote = newChromArray(chromaticScale, chosenStringNote);						// array of chromatic notes, beginning from current cBoxes selected index
+		
+		guitarStringOpenNoteSelect(chromaticScale, index, xLayout, yLayout);								// create a cBox used to select root note of each string
+		
+		selectedNote = guitarStringCBox.getSelectionModel().getSelectedIndex();							// index of this cBoxes currently selected note
+		chromaticFromSelected = newChromArray(chromaticScale, selectedNote);						// array of chromatic notes, beginning from current cBoxes selected index
+		
 		drawNotes(guitarStringsPane, notesInKey, chromaticScale, noteXPos, selectedKeyItem);
+		
 		pane.getChildren().add(guitarStringCBox);
 		guitarStringsPane.getChildren().addAll(guitarString, notesPane);
 		
@@ -47,20 +52,22 @@ public class GuitarString extends Line {
 			@Override
 			public void handle(ActionEvent e) {
 				notesPane.getChildren().clear();															// clear notesPane before redrawing
-				chosenStringNote = guitarStringCBox.getSelectionModel().getSelectedIndex();					// store selected guitarString cBox index
-				arrayFromChosenStringNote = newChromArray(chromaticScale, chosenStringNote);				// create new String array beginning from selected note
+				selectedNote = guitarStringCBox.getSelectionModel().getSelectedIndex();					// store selected guitarString cBox index
+				chromaticFromSelected = newChromArray(chromaticScale, selectedNote);				// create new String array beginning from selected note
 				drawNotes(guitarStringsPane, notesInKey, chromaticScale, noteXPos, GuitarString.this.selectedKeyItem);		// GuitarString.this.selectedKeyItem used because EventHandler
 			}});																											// is the same as creating a new subclass
 	
 	}
-	// changes the root note of the guitar string (0th/12th fret)
+	
+	// Populates the fretboard with note bubbles. 
+	// Changes the root note of the guitar string (0th/12th fret)
 	public void drawNotes(Pane guitarStringsPane, HashMap<String, Integer> notesInKey, 
 							String[] chromaticScale, float[] noteXPos, String itemFromKeyCBox) {	
 		Color color = null;
 		for (int i = 0; i < chromaticScale.length; i++) {													// iterates through Map and turns off noteBubbles not in scale
 			bubbleX = noteXPos[i == 0 ? 11 : i - 1] * 100;													// draw notebubble at fret 12 when i = 0, draw at i-1 otherwise
-			if (notesInKey.get(arrayFromChosenStringNote[i]) != 0) {										// if the value in HashMap isn't zero
-				if(!arrayFromChosenStringNote[i].equals(itemFromKeyCBox)){									// and if the note isn't the tonic to the chosen key, color LIGHTSTEELBLUE
+			if (notesInKey.get(chromaticFromSelected[i]) != 0) {										// if the value in HashMap isn't zero
+				if(!chromaticFromSelected[i].equals(itemFromKeyCBox)){									// and if the note isn't the tonic to the chosen key, color LIGHTSTEELBLUE
 					color = Color.LIGHTSTEELBLUE;
 				}
 				
@@ -71,7 +78,7 @@ public class GuitarString extends Line {
 				// TODO: Selected Chord color here?
 				
 				NoteBubble bubble = new NoteBubble(offset, bubbleX, stringYPos, 
-													arrayFromChosenStringNote[i], color);
+													chromaticFromSelected[i], color);
 				notesPane.getChildren().addAll(bubble, bubble.getText());
 			}
 		}
@@ -87,7 +94,7 @@ public class GuitarString extends Line {
 		return newArray;
 	}
 	// cbox note chosen based on associated string (E,A,D,G,B,E)
-	private void rootNoteSelector(String[] notesArray, int stringNumber, int xLayout, int yLayout) {		
+	private void guitarStringOpenNoteSelect(String[] notesArray, int stringNumber, int xLayout, int yLayout) {		
 		for (int i = 0; i < notesArray.length; i++) {
 			guitarStringCBox.getItems().add(notesArray[i]);
 		}
@@ -140,6 +147,7 @@ public class GuitarString extends Line {
 		return shadow;
 	}
 
+	// 
 	public void setNotesInKey(Pane guitarStringsPane, HashMap<String, Integer> hm, 
 								String[] chromaticScale, float[] noteXPos, String selectedKeyItem){
 		this.notesInKey = hm;

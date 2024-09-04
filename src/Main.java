@@ -10,6 +10,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+//TODO clean up code and merge Tuner and Audio classes to make text based tuner
+
 public class Main extends Application{
 	
 	int stageHeight = 400;
@@ -17,13 +19,12 @@ public class Main extends Application{
 	int imageHeight = 200;
 	int imageWidth = stageWidth;
 	int vBox = 5;
-	String imageDir = "maplefretboard.jpg";
 	Scene mainScene, guitarScene, tunerScene;
 	Pane mainPane, tunerPane, guitarPane, fretboardPane;
 	Button main2Tuner, main2Guitar, mainExit, tuner2Main, tuner2Guitar, tunerExit, guitar2Main, 
 			guitar2Tuner, guitarExit;	
-	Tuner tuner;
-	tarsosTuner tTuner;
+//	Tuner tuner;
+//	tarsosTuner tTuner;
 	
 	public static void main(String[] args){ 
 		launch(args);
@@ -42,7 +43,7 @@ public class Main extends Application{
 		fretboardPane.autosize();
 		fretboardPane.setMouseTransparent(true);	// disables mouse events for entire pane
 		
-		new Guitar(guitarPane, fretboardPane, stageHeight, stageWidth, imageHeight, imageWidth, imageDir);
+		new Guitar(guitarPane, fretboardPane, stageHeight, stageWidth, imageHeight, imageWidth);
 		
 		// App Buttons
 		main2Tuner = new Button("Tuner");
@@ -83,7 +84,7 @@ public class Main extends Application{
 		Label tunerLabel= new Label("This is the tuner scene");
 		VBox tunerVBox = new VBox(vBox);     
 		//tuner = new Tuner(tunerPane, stageHeight, stageWidth);
-		tTuner = new tarsosTuner(tunerPane, stageWidth, stageHeight);
+//		tTuner = new tarsosTuner(tunerPane, stageWidth, stageHeight);
 		tunerVBox.getChildren().addAll(tunerLabel, tuner2Main, tuner2Guitar, tunerExit);
 		tunerPane.getChildren().addAll(tunerVBox);
 		tunerScene = new Scene(tunerPane, 300, 250);
@@ -108,4 +109,3 @@ public class Main extends Application{
 		
 	}
 }
-// TODO clean up code and merge Tuner and Audio classes to make text based tuner

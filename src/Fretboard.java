@@ -12,9 +12,10 @@ public class Fretboard extends Line {
 	private static float fretPosition = 0;
 	private static float fretboardLength = 24.50f;
 	private float[] fretArray;
+	private String imageDir = "maplefretboard.jpg";
 	
 	Fretboard(Pane pane, int stageHeight, int imageHeight, int imageWidth, 
-				int fretCount, String imageDir){
+				int fretCount){
 		this.fretArray = calcFrets(fretCount);
 		// applies an image to act as the fretboard
 		FretboardImage(pane, stageHeight, imageHeight, imageWidth, imageDir);
@@ -76,16 +77,17 @@ public class Fretboard extends Line {
 	{
 		//InputStream stream = this.getClass().getClassLoader().getResourceAsStream(jpg);
 		Image image = null;
+		ImageView imageView = null;
 		try
 		{
-			image = new Image(jpg);	/*double requestedWidth,double requestedHeight,boolean preserveRatio,boolean smooth*/ 
-		// create imageview object
-		
+			image = new Image(jpg);
+			imageView = new ImageView(image);
 		}
 		catch(Exception e){
-			System.out.println("");
+			System.out.println("Bad image");
+			return null;
 		}
-		ImageView imageView = new ImageView(image);
+		
 		imageView.setX(0);
 		imageView.setY(stageHeight / 2 - imageHeight / 2);
 		imageView.setFitHeight(200);
@@ -99,8 +101,8 @@ public class Fretboard extends Line {
 		imageView.toBack();
 		pane.getChildren().add(imageView);
 		return image;
-
 	}
+	
 	public float[] getFretArray(){
 		return fretArray;
 	}
