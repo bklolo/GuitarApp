@@ -54,6 +54,10 @@ public class Guitar {
 	private HashMap<String, Integer> hm = new HashMap<>();								// stores (String)notes, (Integer)values used to display notebubbles on guitar
 	private Pane mainPane = new Pane();
 	private Pane guitarStringsPane = new Pane();
+	
+	// NEW create overlay to compare scales
+	private Pane guitarStringsPane2 = new Pane();
+	
 	private ComboBox<String> scale = new ComboBox<>();
 	private ComboBox<String> key = new ComboBox<>();
 	private ComboBox<String> tunings = new ComboBox<>();
@@ -144,7 +148,7 @@ public class Guitar {
 		scale.setOnAction(new EventHandler<ActionEvent>() {								// update notes displayed to selected Scale item
 			@Override
 			public void handle(ActionEvent e) {
-				clearEachGuitarStringPane();
+				clearGuitarStrings();
 				selectedScalesItem = scale.getSelectionModel().getSelectedItem();
 				updateAndReplaceHash();													// update hashmap values and replace existing GuitarString maps with
 			}});
@@ -153,7 +157,7 @@ public class Guitar {
 		key.setOnAction(new EventHandler<ActionEvent>() {								// update note bubbles per selected Key cBox item
 			@Override
 			public void handle(ActionEvent e) {
-				clearEachGuitarStringPane();											// clear each GuitarString's pane (all string change vs single string change)
+				clearGuitarStrings();											// clear each GuitarString's pane (all string change vs single string change)
 				selectedKeyIndex = key.getSelectionModel().getSelectedIndex();			// store selected Key cBox index
 				selectedKeyItem = key.getSelectionModel().getSelectedItem();
 				chosenKeyChromaticScale = GuitarString.newChromArray(chromaticScale, selectedKeyIndex);	// create new String array beginning from selected index
@@ -164,14 +168,14 @@ public class Guitar {
 		chords.setOnAction(new EventHandler<ActionEvent>() {								// update note displayed per selected Scale cBox item
 			@Override
 			public void handle(ActionEvent e) {
-				clearEachGuitarStringPane();
+				clearGuitarStrings();
 				selectedChordsItem = chords.getSelectionModel().getSelectedItem();
 				updateAndReplaceHash();													// update hashmap values and replace existing GuitarString maps with
 			}});
 	}
 	
 	// iterate through and clear each GuitarString's pane before redrawing NoteBubbles
-	private void clearEachGuitarStringPane() {
+	private void clearGuitarStrings() {
 		for(GuitarString g : guitarStringList){
 			g.getNotesPane().getChildren().clear();
 		}
